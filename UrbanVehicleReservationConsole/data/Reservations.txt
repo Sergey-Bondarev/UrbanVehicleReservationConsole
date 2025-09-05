@@ -1,2 +1,2 @@
-b47b2e5b-7914-4eae-8d5c-bebaab833056;ElectricScooter;16.09.2025 16:00;16.09.2025 17:00;100;Andrew Crimo;test.andmail@mail.ua
-eec25436-8a04-4c31-852a-11d02b62e492;Car;10.09.2025 11:30;10.09.2025 18:30;30,28;Anna Filo;test.annamail@mail.ua
+1;ElectricScooter;16.09.2025 16:00;16.09.2025 17:00;100;Andrew Crimo;test.andmail@mail.ua
+2;Car;10.09.2025 11:30;10.09.2025 18:30;30,28;Anna Filo;test.annamail@mail.ua

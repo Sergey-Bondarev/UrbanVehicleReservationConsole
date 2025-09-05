@@ -103,7 +103,7 @@ namespace UrbanVehicleReservationConsole
                 Console.WriteLine(errorString);
                 return;
             }
-
+            reservation.reservationID = reservations.Max(res => res.reservationID) + 1;
             reservations.Add(reservation);
             Console.WriteLine($"Reservation successfully created with {reservation.reservationID}");
 

@@ -10,7 +10,7 @@ namespace UrbanVehicleReservationConsole
 {
     public class Reservation
     {
-        public Guid reservationID = Guid.NewGuid();
+        public long reservationID = -1; 
         public VehicleType vehicleType;
         public DateTime acceptanceTime;
         public DateTime deliveryTime;
@@ -132,7 +132,7 @@ namespace UrbanVehicleReservationConsole
             var parts = line.Split(';');
             return new Reservation
             {
-                reservationID = Guid.Parse(parts[0]),
+                reservationID = long.Parse(parts[0]),
                 vehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), parts[1]),
                 acceptanceTime = DateTime.ParseExact(parts[2], "dd.MM.yyyy HH:mm", null),
                 deliveryTime = DateTime.ParseExact(parts[3], "dd.MM.yyyy HH:mm", null),
