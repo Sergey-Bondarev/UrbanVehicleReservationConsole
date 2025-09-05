@@ -10,7 +10,7 @@ namespace UrbanVehicleReservationConsole
 {
     public class Reservation
     {
-        public Guid reservationID = Guid.NewGuid();
+        public long reservationID = -1;
         public VehicleType vehicleType;
         public DateTime acceptanceTime;
         public DateTime deliveryTime;
@@ -73,7 +73,7 @@ namespace UrbanVehicleReservationConsole
 
         public bool IsValidAcceptanceDateTime(string dateTimeInput, out string errorString)
         {
-            if (!DateTime.TryParseExact(dateTimeInput, "dd-MM-yyyy HH:mm",
+            if (!DateTime.TryParseExact(dateTimeInput, "dd.MM.yyyy HH:mm",
                 null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
             {
                 errorString = "Invalid date and time format. Please enter a valid date and time.";
@@ -86,7 +86,7 @@ namespace UrbanVehicleReservationConsole
 
         public bool IsValidDeliveryDateTime(string dateTimeInput, out string errorString, int minMinutes = 20)
         {
-            if (!DateTime.TryParseExact(dateTimeInput, "dd-MM-yyyy HH:mm",
+            if (!DateTime.TryParseExact(dateTimeInput, "dd.MM.yyyy HH:mm",
                 null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
             {
                 errorString = "Invalid date/time format or Acceptance time comes after Delivery time. Please enter a valid date and time.";
@@ -122,25 +122,33 @@ namespace UrbanVehicleReservationConsole
             return true;
         }
 
+        public static bool IsValidIndexOrAcceptanceDateTime(string searchInput, out string errorString, out long reservationID, out DateTime acceptanceDateTime)
+        {
+            reservationID = long.MinValue;
+            acceptanceDateTime = DateTime.MinValue;
+            if (long.TryParse(searchInput, out long parsedID) && parsedID >= 0)
+            {
+                reservationID = parsedID;
+                errorString = string.Empty;
+                return true;
+            }
+            else if (DateTime.TryParseExact(searchInput, "dd.MM.yyyy HH:mm",
+                null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
+            {
+                acceptanceDateTime = parsedDateTime;
+                errorString = string.Empty;
+                return true;
+            }
+            errorString = "Invalid input. Please enter a valid reservation ID or date and time in the format dd:MM:yyyy HH:mm.";
+            return false;
+        }
+
         public override string ToString()
         {
             return $"{reservationID};{vehicleType.ToString()};{acceptanceTime:dd.MM.yyyy HH:mm};{deliveryTime:dd.MM.yyyy HH:mm};{price};{customerName};{customerContact}";
         }
 
-        public static Reservation FromString(string line)
-        {
-            var parts = line.Split(';');
-            return new Reservation
-            {
-                reservationID = Guid.Parse(parts[0]),
-                vehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), parts[1]),
-                acceptanceTime = DateTime.ParseExact(parts[2], "dd.MM.yyyy HH:mm", null),
-                deliveryTime = DateTime.ParseExact(parts[3], "dd.MM.yyyy HH:mm", null),
-                price = decimal.Parse(parts[4]),
-                customerName = parts[5],
-                customerContact = parts[6]
-            };
-        }
+        
 
     }
 }

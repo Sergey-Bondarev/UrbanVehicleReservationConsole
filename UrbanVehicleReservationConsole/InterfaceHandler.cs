@@ -8,6 +8,7 @@ namespace UrbanVehicleReservationConsole
 {
     public class InterfaceHandler
     {
+        public static int N = -1;
         public static List<Reservation> reservations = new List<Reservation>();
         public static void PrintMenu()
         {
@@ -22,7 +23,6 @@ namespace UrbanVehicleReservationConsole
         {
             while (true)
             {
-                LoadData();
                 PrintMenu();
                 Console.Write("Select an option: ");
                 var input = Console.ReadLine();
@@ -31,19 +31,23 @@ namespace UrbanVehicleReservationConsole
                     case "1":
                         Console.WriteLine("Reserving a vehicle...");
                         HandleNewReservation();
-                        SaveData();
                         break;
                     case "2":
-                        ViewAllReservations();
+                        ViewAllReservations(reservations);
                         break;
                     case "3":
-                        // Code to find reservations
+                        var foundReservations = HandleSearchForReservetions();
+                        if (foundReservations.Count() == 0)
+                        {
+                            Console.WriteLine("No reservations found on input data.");
+                            break;
+                        }
+                        ViewAllReservations(foundReservations);
                         break;
                     case "4":
                         // Code to cancel a reservation
                         break;
                     case "0":
-                        SaveData();
                         return;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
@@ -80,7 +84,7 @@ namespace UrbanVehicleReservationConsole
                 return;
             }
 
-            Console.WriteLine("Add Acceptance Date with dd-MM-yyyy HH:mm format");
+            Console.WriteLine("Add Acceptance Date with dd.MM.yyyy HH:mm format");
             var acceptanceDateInput = Console.ReadLine();
             if(!reservation.IsValidAcceptanceDateTime(acceptanceDateInput, out errorString))
             {
@@ -88,7 +92,7 @@ namespace UrbanVehicleReservationConsole
                 return;
             }
 
-            Console.WriteLine("Add Delivery Date with dd-MM-yyyy HH:mm format");
+            Console.WriteLine("Add Delivery Date with dd.MM.yyyy HH:mm format");
             var deliveryDateInput = Console.ReadLine();
             if (!reservation.IsValidDeliveryDateTime(deliveryDateInput, out errorString))
             {
@@ -103,12 +107,25 @@ namespace UrbanVehicleReservationConsole
                 Console.WriteLine(errorString);
                 return;
             }
-
+            reservation.reservationID = reservations.Count > 0? reservations.Max(res => res.reservationID) + 1 : 0;
             reservations.Add(reservation);
-            Console.WriteLine($"Reservation successfully created with {reservation.reservationID}");
+            Console.WriteLine($"Reservation successfully created with next index: {reservation.reservationID}");
 
         }
 
+        public static IEnumerable<Reservation> HandleSearchForReservetions()
+        {
+            Console.WriteLine("Please enter unique ID or Reservation date and time of reservation");
+            var input = Console.ReadLine();
+            if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out string errorString, out long id, out DateTime date))
+            {
+                Console.WriteLine(errorString);
+                return new List<Reservation>();
+            }
+            return reservations.FindAll(r => r.reservationID == id || r.acceptanceTime == date || r.deliveryTime == date).ToList();
+
+
+        }
         public static void PrintSubMenuForFindingReservations()
         {
             Console.WriteLine("Find Reservations By:");
@@ -139,9 +156,9 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine("0. Back to Main Menu");
         }
 
-        public static void ViewAllReservations()
+        public static void ViewAllReservations(IEnumerable<Reservation> reservations)
         {
-            if (reservations.Count == 0)
+            if (reservations.Count() == 0)
             {
                 Console.WriteLine("No reservations found.");
                 return;
@@ -161,27 +178,6 @@ namespace UrbanVehicleReservationConsole
         public static void ViewInputError(string inputType, string errorText)
         {
             Console.WriteLine($"OOOOPs something went wrong with {inputType}. {errorText}");
-        }
-
-        public static void SaveData(string filePath = "../../../data/Reservations.txt")
-        {
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                foreach (var reservation in reservations)
-                {
-                    writer.WriteLine(reservation.ToString());
-                }
-            }
-        }
-
-        public static void LoadData(string filePath = "../../../data/Reservations.txt")
-        {
-            reservations.Clear();
-            foreach (var line in File.ReadAllLines(filePath))
-            {
-                if (!string.IsNullOrWhiteSpace(line))
-                    reservations.Add(Reservation.FromString(line));
-            }
         }
     }
 }
