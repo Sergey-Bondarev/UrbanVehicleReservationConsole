@@ -50,7 +50,7 @@ namespace UrbanVehicleReservationConsole
         }
 
         public bool IsValidCustomerName(string customerName, out string errorString,
-            int nameLengthMin = 5, int nameLengthMax = 30, string nameRegex = @"^[A-Za-z]+$")
+            int nameLengthMin = 5, int nameLengthMax = 30, string nameRegex = @"^[A-Za-z ]+$")
         {
             if (string.IsNullOrEmpty(customerName)
                 || string.IsNullOrWhiteSpace(customerName)

@@ -60,7 +60,7 @@ namespace UrbanVehicleReservationConsole
                         PrintInterfaceBorder();
                         break;
                     case "2":
-                        ViewAllReservations(reservations);
+                        ViewAllReservationsTabular(reservations);
                         PrintInterfaceBorder();
                         break;
                     case "3":
@@ -213,7 +213,46 @@ namespace UrbanVehicleReservationConsole
                 Console.WriteLine(new string('-', 40));
             }
         }
-        
+
+        public static void ViewAllReservationsTabular(IEnumerable<Reservation> reservations)
+        {
+            if (reservations.Count() == 0)
+            {
+                Console.WriteLine("No reservations found.");
+                return;
+            }
+
+            int idWidth = Math.Max("ID".Length, reservations.Max(r => r.reservationID.ToString().Length)) + 2;
+            int nameWidth = Math.Max("Customer".Length, reservations.Max(r => r.customerName.Length)) + 2;
+            int contactWidth = Math.Max("Contact".Length, reservations.Max(r => r.customerContact.Length)) + 2;
+            int priceWidth = Math.Max("Price".Length, reservations.Max(r => r.price.ToString().Length)) + 2;
+
+            Console.WriteLine(
+                $"{"ID".PadRight(idWidth)}" +
+                $"{"Customer".PadRight(nameWidth)}" +
+                $"{"Contact".PadRight(contactWidth)}" +
+                $"{"Vehicle".PadRight(17)}" +
+                $"{"Acceptance".PadRight(20)}" +
+                $"{"Delivery".PadRight(20)}" +
+                $"{"Price".PadRight(priceWidth)}"
+            );
+
+            Console.WriteLine(new string('-', idWidth + nameWidth + contactWidth + 17 + 20 + 20 + priceWidth));
+            foreach (var r in reservations)
+            {
+                string acceptance = r.acceptanceTime.ToString("HH:mm");
+                string delivery = r.deliveryTime.ToString("HH:mm");
+                Console.WriteLine(
+                $"{r.reservationID.ToString().PadRight(idWidth)}" +
+                $"{r.customerName.PadRight(nameWidth)}" +
+                $"{r.customerContact.PadRight(contactWidth)}" +
+                $"{r.vehicleType, -17}" +
+                $"{r.acceptanceTime.ToString("dd.MM.yyyy HH:mm"), -20}" +
+                $"{r.deliveryTime.ToString("dd.MM.yyyy HH:mm"), -20}" +
+                $"{(r.price + "$").PadRight(priceWidth)}");
+            }
+        }
+
         public static void PrintInterfaceBorder()
         {
             Console.WriteLine(new string('=', 40));
