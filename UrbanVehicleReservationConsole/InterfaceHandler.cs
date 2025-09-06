@@ -8,7 +8,7 @@ namespace UrbanVehicleReservationConsole
 {
     public class InterfaceHandler
     {
-        public static int N = -1;
+        public static int N = 0;
         public static List<Reservation> reservations = new List<Reservation>();
         public static void PrintMenu()
         {
@@ -23,29 +23,70 @@ namespace UrbanVehicleReservationConsole
         {
             while (true)
             {
+                Console.WriteLine("Please enter the maximum number of reservation you want to work with or press 0 to exit program");
+                var inputN = Console.ReadLine();
+                if(!int.TryParse(inputN, out int validN) || validN < 0)
+                {
+                    Console.WriteLine("Invalid input. Please enter a positive integer.");
+                    inputN = Console.ReadLine();
+                }
+                else if (validN == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    N = validN;
+                    break;
+                }
+            }
+            
+            PrintInterfaceBorder();
+            while (true)
+            {
                 PrintMenu();
                 Console.Write("Select an option: ");
                 var input = Console.ReadLine();
                 switch (input)
                 {
                     case "1":
+                        if (reservations.Count >= N)
+                        {
+                            Console.WriteLine($"Cannot add more reservations. Maximum limit of {N} reached.");
+                            return;
+                        }
                         Console.WriteLine("Reserving a vehicle...");
                         HandleNewReservation();
+                        PrintInterfaceBorder();
                         break;
                     case "2":
                         ViewAllReservations(reservations);
+                        PrintInterfaceBorder();
                         break;
                     case "3":
-                        var foundReservations = HandleSearchForReservetions();
+                        var foundReservations = HandleSearchForReservetions("Please enter unique ID or Reservation date and time of reservation");
                         if (foundReservations.Count() == 0)
                         {
                             Console.WriteLine("No reservations found on input data.");
                             break;
                         }
                         ViewAllReservations(foundReservations);
+                        PrintInterfaceBorder();
                         break;
                     case "4":
-                        // Code to cancel a reservation
+                        int removedCount = 0;
+                        HandleDeleteReservation("Please enter unique ID or Reservation date and time of reservation to delete", out removedCount);
+                        if (removedCount == 0)
+                        {
+                            Console.WriteLine("No objects were deleted on your input.");
+                            break;
+                        }
+                        else if(removedCount > 0)
+                        {
+                            Console.WriteLine($"{removedCount} reservation(s) successfully removed.");
+                            break;
+                        }
+                        PrintInterfaceBorder();
                         break;
                     case "0":
                         return;
@@ -107,35 +148,41 @@ namespace UrbanVehicleReservationConsole
                 Console.WriteLine(errorString);
                 return;
             }
+            
             reservation.reservationID = reservations.Count > 0? reservations.Max(res => res.reservationID) + 1 : 0;
             reservations.Add(reservation);
             Console.WriteLine($"Reservation successfully created with next index: {reservation.reservationID}");
 
         }
 
-        public static IEnumerable<Reservation> HandleSearchForReservetions()
+        public static IEnumerable<Reservation> HandleSearchForReservetions(string searchPurposeMessage)
         {
-            Console.WriteLine("Please enter unique ID or Reservation date and time of reservation");
+            Console.WriteLine(searchPurposeMessage);
             var input = Console.ReadLine();
             if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out string errorString, out long id, out DateTime date))
             {
                 Console.WriteLine(errorString);
                 return new List<Reservation>();
             }
-            return reservations.FindAll(r => r.reservationID == id || r.acceptanceTime == date || r.deliveryTime == date).ToList();
-
-
+            return reservations.FindAll(r => r.reservationID == id
+                                    || r.acceptanceTime == date).ToList();
         }
-        public static void PrintSubMenuForFindingReservations()
+
+        public static void HandleDeleteReservation(string deletePurposeMessage, out int removeCount)
         {
-            Console.WriteLine("Find Reservations By:");
-            Console.WriteLine("1. Reservation ID");
-            Console.WriteLine("3. Vehicle Type");
-            Console.WriteLine("4. Acceptance Date");
-            Console.WriteLine("5. Delivery Date");
-            Console.WriteLine("0. Back to Main Menu");
-        }
+            Console.WriteLine(deletePurposeMessage);
+            var input = Console.ReadLine();
+            if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out string errorString, out long id, out DateTime date))
+            {
+                Console.WriteLine(errorString);
+                removeCount = -1;
+                return;
+            }
+            removeCount = reservations.RemoveAll(r => r.reservationID == id 
+                                            || r.acceptanceTime == date);
 
+        }
+        
         public static void PrintSubMenuForVehicleTypes()
         {
             Console.WriteLine("Vehicle Types:");
@@ -147,15 +194,6 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine("0. Back to Main Menu");
         }
         
-
-        public static void PrintSubMenuForDateRanges()
-        {
-            Console.WriteLine("Date Ranges:");
-            Console.WriteLine("1. Acceptance time");
-            Console.WriteLine("2. Delivery Week");
-            Console.WriteLine("0. Back to Main Menu");
-        }
-
         public static void ViewAllReservations(IEnumerable<Reservation> reservations)
         {
             if (reservations.Count() == 0)
@@ -175,9 +213,11 @@ namespace UrbanVehicleReservationConsole
                 Console.WriteLine(new string('-', 40));
             }
         }
-        public static void ViewInputError(string inputType, string errorText)
+        
+        public static void PrintInterfaceBorder()
         {
-            Console.WriteLine($"OOOOPs something went wrong with {inputType}. {errorText}");
+            Console.WriteLine(new string('=', 40));
+            Console.WriteLine();
         }
     }
 }
