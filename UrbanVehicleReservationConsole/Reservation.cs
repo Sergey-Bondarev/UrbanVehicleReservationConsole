@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace UrbanVehicleReservationConsole
@@ -48,22 +49,39 @@ namespace UrbanVehicleReservationConsole
             return true;
         }
 
-        public bool IsValidCustomerName(string customerName, out string errorString, int nameLength = 5)
+        public bool IsValidCustomerName(string customerName, out string errorString,
+            int nameLengthMin = 5, int nameLengthMax = 30, string nameRegex = @"^[A-Za-z]+$")
         {
-            if (string.IsNullOrEmpty(customerName) || string.IsNullOrWhiteSpace(customerName) || customerName.Length < nameLength)
+            if (string.IsNullOrEmpty(customerName)
+                || string.IsNullOrWhiteSpace(customerName)
+                || customerName.Length < nameLengthMin
+                || customerName.Length > nameLengthMax
+                || !Regex.IsMatch(customerName, nameRegex))
             {
-                errorString = $"Invalid customer name. Please enter a non-empty name with a minimum length of {nameLength} characters.";
+                errorString = $"Invalid customer name. Please enter a non-empty name with a length range between {nameLengthMin} - {nameLengthMax} characters.";
                 return false;
             }
             errorString = string.Empty;
             this.customerName = customerName;
             return true;
         }
-        public bool IsValidCustomerContact(string customerContact, out string errorString, int contactLength = 10)
+        public bool IsValidCustomerContact(string customerContact, out string errorString, int contactLengthMin = 10, int contactLengthMax = 30,
+            string emailReg = @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+            string telReg = @"^\+380\d{9}$")
         {
-            if (string.IsNullOrEmpty (customerContact)|| string.IsNullOrWhiteSpace(customerContact) || customerContact.Length < contactLength)
+            if (string.IsNullOrEmpty (customerContact)
+                || string.IsNullOrWhiteSpace(customerContact)
+                || customerContact.Length < contactLengthMin
+                || customerContact.Length > contactLengthMax)
             {
-                errorString = $"Invalid customer contact. Please enter a non-empty contact with a minimum length of {contactLength} characters.";
+                errorString = $"Invalid customer contact. Please enter a non-empty contact with a a length range between {contactLengthMin} - {contactLengthMax} characters.";
+                return false;
+            }
+
+            else if(!Regex.IsMatch(customerContact, emailReg)
+                && !Regex.IsMatch(customerContact, telReg))
+            {
+                errorString = $"Invalid customer contact. Input should be either tel. number with +380 or valid email address";
                 return false;
             }
             errorString = string.Empty;
@@ -79,7 +97,12 @@ namespace UrbanVehicleReservationConsole
                 errorString = "Invalid date and time format. Please enter a valid date and time.";
                 return false;
             }
-            errorString = string.Empty;
+            else if(parsedDateTime <= new DateTime(2025,01,01,23,59,59))
+            {
+                errorString = "Invalid date and time format. Please enter a date after 01.01.2025";
+                return false;
+            }
+                errorString = string.Empty;
             this.acceptanceTime = parsedDateTime;
             return true;
         }
