@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UrbanVehicleReservationConsole
 {
-    public class InterfaceHandler
+    public static class InterfaceHandler
     {
         public static int N = 0;
         public static List<Reservation> reservations = new List<Reservation>();
@@ -202,14 +202,7 @@ namespace UrbanVehicleReservationConsole
             }
             foreach (var reservation in reservations)
             {
-                Console.WriteLine($"Reservation ID: {reservation.reservationID}");
-                Console.WriteLine($"Vehicle Type: {reservation.vehicleType}");
-                Console.WriteLine($"Acceptance Time: {reservation.acceptanceTime}");
-                Console.WriteLine($"Delivery Time: {reservation.deliveryTime}");
-                Console.WriteLine($"Customer Name: {reservation.customerName}");
-                Console.WriteLine($"Customer Contact: {reservation.customerContact}");
-                Console.WriteLine($"Price: {reservation.price}");
-                Console.WriteLine(new string('-', 40));
+                Console.WriteLine(reservation.ToString());
             }
         }
 

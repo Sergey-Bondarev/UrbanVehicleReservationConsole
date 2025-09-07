@@ -165,5 +165,17 @@ namespace UrbanVehicleReservationConsole
             errorString = "Invalid input. Please enter a valid reservation ID or date and time in the format dd:MM:yyyy HH:mm.";
             return false;
         }
+
+        public override string ToString()
+        {
+            return $"Reservation ID: {reservationID}\n" +
+            $"Vehicle Type: {vehicleType}\n" +
+            $"Acceptance Time: {acceptanceTime}\n" +
+            $"Delivery Time: {deliveryTime}\n" +
+            $"Customer Name: {customerName}\n" +
+            $"Customer Contact: {customerContact}\n" +
+            $"Price: {price}\n"
+            + new string('-', 40);
+        }
     }
 }
