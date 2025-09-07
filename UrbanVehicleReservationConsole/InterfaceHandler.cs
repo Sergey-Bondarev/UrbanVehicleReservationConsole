@@ -152,7 +152,6 @@ namespace UrbanVehicleReservationConsole
             reservation.reservationID = reservations.Count > 0? reservations.Max(res => res.reservationID) + 1 : 0;
             reservations.Add(reservation);
             Console.WriteLine($"Reservation successfully created with next index: {reservation.reservationID}");
-
         }
 
         public static IEnumerable<Reservation> HandleSearchForReservetions(string searchPurposeMessage)
@@ -222,6 +221,8 @@ namespace UrbanVehicleReservationConsole
                 return;
             }
 
+            const int vehicleTypeWidth = 17;
+            const int dateWidth = 20;
             int idWidth = Math.Max("ID".Length, reservations.Max(r => r.reservationID.ToString().Length)) + 2;
             int nameWidth = Math.Max("Customer".Length, reservations.Max(r => r.customerName.Length)) + 2;
             int contactWidth = Math.Max("Contact".Length, reservations.Max(r => r.customerContact.Length)) + 2;
@@ -231,13 +232,13 @@ namespace UrbanVehicleReservationConsole
                 $"{"ID".PadRight(idWidth)}" +
                 $"{"Customer".PadRight(nameWidth)}" +
                 $"{"Contact".PadRight(contactWidth)}" +
-                $"{"Vehicle".PadRight(17)}" +
-                $"{"Acceptance".PadRight(20)}" +
-                $"{"Delivery".PadRight(20)}" +
+                $"{"Vehicle".PadRight(vehicleTypeWidth)}" +
+                $"{"Acceptance".PadRight(dateWidth)}" +
+                $"{"Delivery".PadRight(dateWidth)}" +
                 $"{"Price".PadRight(priceWidth)}"
             );
 
-            Console.WriteLine(new string('-', idWidth + nameWidth + contactWidth + 17 + 20 + 20 + priceWidth));
+            Console.WriteLine(new string('-', idWidth + nameWidth + contactWidth + vehicleTypeWidth + dateWidth + dateWidth + priceWidth));
             foreach (var r in reservations)
             {
                 string acceptance = r.acceptanceTime.ToString("HH:mm");
@@ -246,16 +247,16 @@ namespace UrbanVehicleReservationConsole
                 $"{r.reservationID.ToString().PadRight(idWidth)}" +
                 $"{r.customerName.PadRight(nameWidth)}" +
                 $"{r.customerContact.PadRight(contactWidth)}" +
-                $"{r.vehicleType, -17}" +
-                $"{r.acceptanceTime.ToString("dd.MM.yyyy HH:mm"), -20}" +
-                $"{r.deliveryTime.ToString("dd.MM.yyyy HH:mm"), -20}" +
+                $"{r.vehicleType, -vehicleTypeWidth}" +
+                $"{r.acceptanceTime.ToString("dd.MM.yyyy HH:mm"), -dateWidth}" +
+                $"{r.deliveryTime.ToString("dd.MM.yyyy HH:mm"), -dateWidth}" +
                 $"{(r.price + "$").PadRight(priceWidth)}");
             }
         }
 
         public static void PrintInterfaceBorder()
         {
-            Console.WriteLine(new string('=', 40));
+            Console.WriteLine(new string('=', 60));
             Console.WriteLine();
         }
     }
