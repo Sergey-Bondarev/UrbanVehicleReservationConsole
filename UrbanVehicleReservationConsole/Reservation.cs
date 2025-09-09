@@ -11,7 +11,7 @@ namespace UrbanVehicleReservationConsole
 {
     public class Reservation
     {
-        public long reservationID = -1;
+        public long ReservationID { get; private set; } = -1;
         public VehicleType vehicleType;
         public DateTime acceptanceTime;
         public DateTime deliveryTime;
@@ -26,15 +26,6 @@ namespace UrbanVehicleReservationConsole
             customerName = string.Empty;
             customerContact = string.Empty;
             price = 0.0m;
-        }
-        public Reservation(VehicleType vehicleType, DateTime acceptanceTime, DateTime deliveryTime, string customerName, string customerContact, decimal price)
-        {
-            this.vehicleType = vehicleType;
-            this.acceptanceTime = acceptanceTime;
-            this.deliveryTime = deliveryTime;
-            this.customerName = customerName;
-            this.customerContact = customerContact;
-            this.price = price;
         }
 
         public bool IsValidVehicleType(string vehicleTypeInput, out string errorString)
@@ -102,7 +93,7 @@ namespace UrbanVehicleReservationConsole
                 errorString = "Invalid date and time format. Please enter a date after 01.01.2025";
                 return false;
             }
-                errorString = string.Empty;
+            errorString = string.Empty;
             this.acceptanceTime = parsedDateTime;
             return true;
         }
@@ -168,7 +159,7 @@ namespace UrbanVehicleReservationConsole
 
         public override string ToString()
         {
-            return $"Reservation ID: {reservationID}\n" +
+            return $"Reservation ID: {ReservationID}\n" +
             $"Vehicle Type: {vehicleType}\n" +
             $"Acceptance Time: {acceptanceTime}\n" +
             $"Delivery Time: {deliveryTime}\n" +
@@ -177,5 +168,12 @@ namespace UrbanVehicleReservationConsole
             $"Price: {price}\n"
             + new string('-', 40);
         }
+
+        public void setIndex (IEnumerable<Reservation> reservations)
+        {
+            ReservationID = reservations.Count() > 0 ? reservations.Max(res => res.ReservationID) + 1 : 0;
+        }
+
+
     }
 }

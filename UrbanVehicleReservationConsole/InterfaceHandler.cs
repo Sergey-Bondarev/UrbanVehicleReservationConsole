@@ -8,7 +8,7 @@ namespace UrbanVehicleReservationConsole
 {
     public static class InterfaceHandler
     {
-        public static int N = 0;
+        private static int N = 0;
         public static List<Reservation> reservations = new List<Reservation>();
         public static void PrintMenu()
         {
@@ -100,58 +100,107 @@ namespace UrbanVehicleReservationConsole
         public static void HandleNewReservation()
         {
             Console.WriteLine("Add Vehicle type number");
+            string errorString;
             PrintSubMenuForVehicleTypes();
-            var vehicleTypeInput = Console.ReadLine();
             Reservation reservation = new Reservation();
-            if (!reservation.IsValidVehicleType(vehicleTypeInput, out string errorString))
+            while (true)
             {
-                Console.WriteLine(errorString);
-                return;
+                var vehicleTypeInput = Console.ReadLine();
+                if (vehicleTypeInput == "0")
+                {
+                    return;
+                }
+                else if (!reservation.IsValidVehicleType(vehicleTypeInput, out errorString))
+                {
+                    Console.WriteLine(errorString);
+                    continue;
+                }
+                
+                break;
             }
-
+            
             Console.WriteLine("Add Customer Name");
-            var customerNameInput = Console.ReadLine();
-            if (!reservation.IsValidCustomerName(customerNameInput, out errorString))
+            while(true)
             {
-                Console.WriteLine(errorString);
-                return;
+                var customerNameInput = Console.ReadLine();
+                if (customerNameInput == "0")
+                {
+                    return;
+                }
+                else if (!reservation.IsValidCustomerName(customerNameInput, out errorString))
+                {
+                    Console.WriteLine(errorString);
+                    continue;
+                }
+                break;
             }
-
+            
             Console.WriteLine("Add Customer Contact");
-            var customerContactInput = Console.ReadLine();
-            if (!reservation.IsValidCustomerContact(customerContactInput, out errorString))
+            while(true)
             {
-                Console.WriteLine(errorString);
-                return;
+                var customerContactInput = Console.ReadLine();
+                if (customerContactInput == "0")
+                {
+                    return;
+                }
+                else if (!reservation.IsValidCustomerContact(customerContactInput, out errorString))
+                {
+                    Console.WriteLine(errorString);
+                    continue;
+                }
+                break;
             }
-
+            
             Console.WriteLine("Add Acceptance Date with dd.MM.yyyy HH:mm format");
-            var acceptanceDateInput = Console.ReadLine();
-            if(!reservation.IsValidAcceptanceDateTime(acceptanceDateInput, out errorString))
+            while(true)
             {
-                Console.WriteLine(errorString);
-                return;
+                var acceptanceDateInput = Console.ReadLine();
+                if (acceptanceDateInput == "0")
+                {
+                    return;
+                }
+                else if (!reservation.IsValidAcceptanceDateTime(acceptanceDateInput, out errorString))
+                {
+                    Console.WriteLine(errorString);
+                    continue;
+                }
+                break;
             }
 
             Console.WriteLine("Add Delivery Date with dd.MM.yyyy HH:mm format");
-            var deliveryDateInput = Console.ReadLine();
-            if (!reservation.IsValidDeliveryDateTime(deliveryDateInput, out errorString))
+            while (true)
             {
-                Console.WriteLine(errorString);
-                return;
-            }
-
-            Console.WriteLine("Add Price");
-            var priceInput = Console.ReadLine();
-            if (!reservation.IsValidPrice(priceInput, out errorString))
-            {
-                Console.WriteLine(errorString);
-                return;
+                var deliveryDateInput = Console.ReadLine();
+                if (deliveryDateInput == "0")
+                {
+                    return;
+                }
+                else if (!reservation.IsValidDeliveryDateTime(deliveryDateInput, out errorString))
+                {
+                    Console.WriteLine(errorString);
+                    continue;
+                }
+                break;
             }
             
-            reservation.reservationID = reservations.Count > 0? reservations.Max(res => res.reservationID) + 1 : 0;
+            Console.WriteLine("Add Price");
+            while(true)
+            {
+                var priceInput = Console.ReadLine();
+                if (priceInput == "0")
+                {
+                    return;
+                }
+                else if (!reservation.IsValidPrice(priceInput, out errorString))
+                {
+                    Console.WriteLine(errorString);
+                    continue;
+                }
+                break;
+            }
+            reservation.setIndex(reservations);
             reservations.Add(reservation);
-            Console.WriteLine($"Reservation successfully created with next index: {reservation.reservationID}");
+            Console.WriteLine($"Reservation successfully created with next index");
         }
 
         public static IEnumerable<Reservation> HandleSearchForReservetions(string searchPurposeMessage)
@@ -163,7 +212,7 @@ namespace UrbanVehicleReservationConsole
                 Console.WriteLine(errorString);
                 return new List<Reservation>();
             }
-            return reservations.FindAll(r => r.reservationID == id
+            return reservations.FindAll(r => r.ReservationID == id
                                     || r.acceptanceTime == date).ToList();
         }
 
@@ -177,7 +226,7 @@ namespace UrbanVehicleReservationConsole
                 removeCount = -1;
                 return;
             }
-            removeCount = reservations.RemoveAll(r => r.reservationID == id 
+            removeCount = reservations.RemoveAll(r => r.ReservationID == id 
                                             || r.acceptanceTime == date);
 
         }
@@ -216,7 +265,7 @@ namespace UrbanVehicleReservationConsole
 
             const int vehicleTypeWidth = 17;
             const int dateWidth = 20;
-            int idWidth = Math.Max("ID".Length, reservations.Max(r => r.reservationID.ToString().Length)) + 2;
+            int idWidth = Math.Max("ID".Length, reservations.Max(r => r.ReservationID.ToString().Length)) + 2;
             int nameWidth = Math.Max("Customer".Length, reservations.Max(r => r.customerName.Length)) + 2;
             int contactWidth = Math.Max("Contact".Length, reservations.Max(r => r.customerContact.Length)) + 2;
             int priceWidth = Math.Max("Price".Length, reservations.Max(r => r.price.ToString().Length)) + 2;
@@ -237,7 +286,7 @@ namespace UrbanVehicleReservationConsole
                 string acceptance = r.acceptanceTime.ToString("HH:mm");
                 string delivery = r.deliveryTime.ToString("HH:mm");
                 Console.WriteLine(
-                $"{r.reservationID.ToString().PadRight(idWidth)}" +
+                $"{r.ReservationID.ToString().PadRight(idWidth)}" +
                 $"{r.customerName.PadRight(nameWidth)}" +
                 $"{r.customerContact.PadRight(contactWidth)}" +
                 $"{r.vehicleType, -vehicleTypeWidth}" +
@@ -249,7 +298,7 @@ namespace UrbanVehicleReservationConsole
 
         public static void PrintInterfaceBorder()
         {
-            Console.WriteLine(new string('=', 60));
+            Console.WriteLine(new string('=', 100));
             Console.WriteLine();
         }
     }
