@@ -17,7 +17,7 @@ namespace UrbanVehicleReservationConsole
         public DateTime deliveryTime;
         public string customerName;
         public string customerContact;
-        public decimal price;
+        public decimal Price { get; private set; }
         public Reservation()
         {
             vehicleType = VehicleType.Car;
@@ -25,7 +25,7 @@ namespace UrbanVehicleReservationConsole
             deliveryTime = DateTime.MinValue;
             customerName = string.Empty;
             customerContact = string.Empty;
-            price = 0.0m;
+            Price = 0.0m;
         }
 
         public bool IsValidVehicleType(string vehicleTypeInput, out string errorString)
@@ -132,7 +132,7 @@ namespace UrbanVehicleReservationConsole
                 return false;
             }
             errorString = string.Empty;
-            this.price = parsedPrice;
+            this.Price = parsedPrice;
             return true;
         }
 
@@ -165,13 +165,30 @@ namespace UrbanVehicleReservationConsole
             $"Delivery Time: {deliveryTime}\n" +
             $"Customer Name: {customerName}\n" +
             $"Customer Contact: {customerContact}\n" +
-            $"Price: {price}\n"
+            $"Price: {Price}\n"
             + new string('-', 40);
         }
 
         public void setIndex (IEnumerable<Reservation> reservations)
         {
             ReservationID = reservations.Count() > 0 ? reservations.Max(res => res.ReservationID) + 1 : 0;
+        }
+
+        public void CalculatePrice()
+        {
+            decimal ratePerHour = vehicleType switch
+            {
+                VehicleType.Car => 10.0m,
+                VehicleType.Motorcycle => 7.0m,
+                VehicleType.Bike => 5.0m,
+                VehicleType.Scooter => 6.0m,
+                VehicleType.ElectricScooter => 8.0m,
+                _ => 0.0m
+            };
+            TimeSpan duration = deliveryTime - acceptanceTime;
+            decimal totalHours = (decimal)duration.TotalHours;
+            int hoursToCharge = (int)Math.Ceiling(totalHours);
+            Price = hoursToCharge * ratePerHour;
         }
 
 

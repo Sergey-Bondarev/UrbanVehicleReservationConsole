@@ -183,21 +183,22 @@ namespace UrbanVehicleReservationConsole
                 break;
             }
             
-            Console.WriteLine("Add Price");
-            while(true)
-            {
-                var priceInput = Console.ReadLine();
-                if (priceInput == "0")
-                {
-                    return;
-                }
-                else if (!reservation.IsValidPrice(priceInput, out errorString))
-                {
-                    Console.WriteLine(errorString);
-                    continue;
-                }
-                break;
-            }
+            //Console.WriteLine("Add Price");
+            //while(true)
+            //{
+            //    var priceInput = Console.ReadLine();
+            //    if (priceInput == "0")
+            //    {
+            //        return;
+            //    }
+            //    else if (!reservation.IsValidPrice(priceInput, out errorString))
+            //    {
+            //        Console.WriteLine(errorString);
+            //        continue;
+            //    }
+            //    break;
+            //}
+
             reservation.setIndex(reservations);
             reservations.Add(reservation);
             Console.WriteLine($"Reservation successfully created with next index");
@@ -268,7 +269,7 @@ namespace UrbanVehicleReservationConsole
             int idWidth = Math.Max("ID".Length, reservations.Max(r => r.ReservationID.ToString().Length)) + 2;
             int nameWidth = Math.Max("Customer".Length, reservations.Max(r => r.customerName.Length)) + 2;
             int contactWidth = Math.Max("Contact".Length, reservations.Max(r => r.customerContact.Length)) + 2;
-            int priceWidth = Math.Max("Price".Length, reservations.Max(r => r.price.ToString().Length)) + 2;
+            int priceWidth = Math.Max("Price".Length, reservations.Max(r => r.Price.ToString().Length)) + 2;
 
             Console.WriteLine(
                 $"{"ID".PadRight(idWidth)}" +
@@ -292,7 +293,7 @@ namespace UrbanVehicleReservationConsole
                 $"{r.vehicleType, -vehicleTypeWidth}" +
                 $"{r.acceptanceTime.ToString("dd.MM.yyyy HH:mm"), -dateWidth}" +
                 $"{r.deliveryTime.ToString("dd.MM.yyyy HH:mm"), -dateWidth}" +
-                $"{(r.price + "$").PadRight(priceWidth)}");
+                $"{(r.Price + "$").PadRight(priceWidth)}");
             }
         }
 
