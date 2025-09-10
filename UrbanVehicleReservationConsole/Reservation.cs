@@ -190,7 +190,5 @@ namespace UrbanVehicleReservationConsole
             int hoursToCharge = (int)Math.Ceiling(totalHours);
             Price = hoursToCharge * ratePerHour;
         }
-
-
     }
 }

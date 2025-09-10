@@ -198,7 +198,7 @@ namespace UrbanVehicleReservationConsole
             //    }
             //    break;
             //}
-
+            reservation.CalculatePrice();
             reservation.setIndex(reservations);
             reservations.Add(reservation);
             Console.WriteLine($"Reservation successfully created with next index");
