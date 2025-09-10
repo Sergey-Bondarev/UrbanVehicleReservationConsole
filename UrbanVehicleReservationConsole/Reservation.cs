@@ -159,14 +159,7 @@ namespace UrbanVehicleReservationConsole
 
         public override string ToString()
         {
-            return $"Reservation ID: {ReservationID}\n" +
-            $"Vehicle Type: {vehicleType}\n" +
-            $"Acceptance Time: {acceptanceTime}\n" +
-            $"Delivery Time: {deliveryTime}\n" +
-            $"Customer Name: {customerName}\n" +
-            $"Customer Contact: {customerContact}\n" +
-            $"Price: {Price}\n"
-            + new string('-', 40);
+            return $"{ReservationID};{vehicleType.ToString()};{acceptanceTime:dd.MM.yyyy HH:mm};{deliveryTime:dd.MM.yyyy HH:mm};{Price};{customerName};{customerContact}";
         }
 
         public void setIndex (IEnumerable<Reservation> reservations)
