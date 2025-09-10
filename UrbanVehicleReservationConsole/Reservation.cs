@@ -190,5 +190,20 @@ namespace UrbanVehicleReservationConsole
             int hoursToCharge = (int)Math.Ceiling(totalHours);
             Price = hoursToCharge * ratePerHour;
         }
+
+        public static Reservation FromString(string line)
+        {
+            var parts = line.Split(';');
+            return new Reservation
+            {
+                ReservationID = long.Parse(parts[0]),
+                vehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), parts[1]),
+                acceptanceTime = DateTime.ParseExact(parts[2], "dd.MM.yyyy HH:mm", null),
+                deliveryTime = DateTime.ParseExact(parts[3], "dd.MM.yyyy HH:mm", null),
+                Price = decimal.Parse(parts[4]),
+                customerName = parts[5],
+                customerContact = parts[6]
+            };
+        }
     }
 }

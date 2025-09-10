@@ -1,0 +1,8 @@
+Reservation ID: 0
+Vehicle Type: Motorcycle
+Acceptance Time: 10.09.2025 12:00:00
+Delivery Time: 08.11.2025 17:00:00
+Customer Name: Joe Doe
+Customer Contact: test.joe@mail.com
+Price: 9947,0
+----------------------------------------

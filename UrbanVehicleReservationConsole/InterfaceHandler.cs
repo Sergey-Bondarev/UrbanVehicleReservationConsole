@@ -8,7 +8,7 @@ namespace UrbanVehicleReservationConsole
 {
     public static class InterfaceHandler
     {
-        private static int N = 0;
+        // private static int N = 0;
         public static List<Reservation> reservations = new List<Reservation>();
         public static void PrintMenu()
         {
@@ -21,26 +21,27 @@ namespace UrbanVehicleReservationConsole
         }
         public static void HandleUserMenuInput()
         {
-            while (true)
-            {
-                Console.WriteLine("Please enter the maximum number of reservation you want to work with or press 0 to exit program");
-                var inputN = Console.ReadLine();
-                if(!int.TryParse(inputN, out int validN) || validN < 0)
-                {
-                    Console.WriteLine("Invalid input. Please enter a positive integer.");
-                    inputN = Console.ReadLine();
-                }
-                else if (validN == 0)
-                {
-                    return;
-                }
-                else
-                {
-                    N = validN;
-                    break;
-                }
-            }
+            //while (true)
+            //{
+            //    Console.WriteLine("Please enter the maximum number of reservation you want to work with or press 0 to exit program");
+            //    var inputN = Console.ReadLine();
+            //    if(!int.TryParse(inputN, out int validN) || validN < 0)
+            //    {
+            //        Console.WriteLine("Invalid input. Please enter a positive integer.");
+            //        inputN = Console.ReadLine();
+            //    }
+            //    else if (validN == 0)
+            //    {
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        N = validN;
+            //        break;
+            //    }
+            //}
             
+            LoadData();
             PrintInterfaceBorder();
             while (true)
             {
@@ -50,14 +51,15 @@ namespace UrbanVehicleReservationConsole
                 switch (input)
                 {
                     case "1":
-                        if (reservations.Count >= N)
-                        {
-                            Console.WriteLine($"Cannot add more reservations. Maximum limit of {N} reached.");
-                            return;
-                        }
+                        //if (reservations.Count >= N)
+                        //{
+                        //    Console.WriteLine($"Cannot add more reservations. Maximum limit of {N} reached.");
+                        //    return;
+                        //}
                         Console.WriteLine("Reserving a vehicle...");
                         HandleNewReservation();
                         PrintInterfaceBorder();
+                        SaveData();
                         break;
                     case "2":
                         ViewAllReservationsTabular(reservations);
@@ -70,8 +72,9 @@ namespace UrbanVehicleReservationConsole
                             Console.WriteLine("No reservations found on input data.");
                             break;
                         }
-                        ViewAllReservations(foundReservations);
+                        ViewAllReservationsTabular(foundReservations);
                         PrintInterfaceBorder();
+                        SaveData();
                         break;
                     case "4":
                         int removedCount = 0;
@@ -89,6 +92,7 @@ namespace UrbanVehicleReservationConsole
                         PrintInterfaceBorder();
                         break;
                     case "0":
+                        SaveData();
                         return;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
@@ -243,19 +247,6 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine("0. Back to Main Menu");
         }
         
-        public static void ViewAllReservations(IEnumerable<Reservation> reservations)
-        {
-            if (reservations.Count() == 0)
-            {
-                Console.WriteLine("No reservations found.");
-                return;
-            }
-            foreach (var reservation in reservations)
-            {
-                Console.WriteLine(reservation.ToString());
-            }
-        }
-
         public static void ViewAllReservationsTabular(IEnumerable<Reservation> reservations)
         {
             if (reservations.Count() == 0)
@@ -305,6 +296,10 @@ namespace UrbanVehicleReservationConsole
 
         public static void SaveData(string filePath = "../../../data/Reservations.txt")
         {
+            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
             using (StreamWriter writer = new StreamWriter(filePath))
             {
                 foreach (var reservation in reservations)
@@ -316,6 +311,11 @@ namespace UrbanVehicleReservationConsole
 
         public static void LoadData(string filePath = "../../../data/Reservations.txt")
         {
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine("Data file not found. Starting with an empty reservation list.");
+                return;
+            }
             reservations.Clear();
             foreach (var line in File.ReadAllLines(filePath))
             {
