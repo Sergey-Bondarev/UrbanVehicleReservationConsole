@@ -302,5 +302,26 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine(new string('=', 100));
             Console.WriteLine();
         }
+
+        public static void SaveData(string filePath = "../../../data/Reservations.txt")
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                foreach (var reservation in reservations)
+                {
+                    writer.WriteLine(reservation.ToString());
+                }
+            }
+        }
+
+        public static void LoadData(string filePath = "../../../data/Reservations.txt")
+        {
+            reservations.Clear();
+            foreach (var line in File.ReadAllLines(filePath))
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                    reservations.Add(Reservation.FromString(line));
+            }
+        }
     }
 }
