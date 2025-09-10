@@ -8,7 +8,6 @@ namespace UrbanVehicleReservationConsole
 {
     public static class InterfaceHandler
     {
-        // private static int N = 0;
         public static List<Reservation> reservations = new List<Reservation>();
         public static void PrintMenu()
         {
@@ -21,26 +20,6 @@ namespace UrbanVehicleReservationConsole
         }
         public static void HandleUserMenuInput()
         {
-            //while (true)
-            //{
-            //    Console.WriteLine("Please enter the maximum number of reservation you want to work with or press 0 to exit program");
-            //    var inputN = Console.ReadLine();
-            //    if(!int.TryParse(inputN, out int validN) || validN < 0)
-            //    {
-            //        Console.WriteLine("Invalid input. Please enter a positive integer.");
-            //        inputN = Console.ReadLine();
-            //    }
-            //    else if (validN == 0)
-            //    {
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        N = validN;
-            //        break;
-            //    }
-            //}
-            
             LoadData();
             PrintInterfaceBorder();
             while (true)
@@ -51,11 +30,6 @@ namespace UrbanVehicleReservationConsole
                 switch (input)
                 {
                     case "1":
-                        //if (reservations.Count >= N)
-                        //{
-                        //    Console.WriteLine($"Cannot add more reservations. Maximum limit of {N} reached.");
-                        //    return;
-                        //}
                         Console.WriteLine("Reserving a vehicle...");
                         HandleNewReservation();
                         PrintInterfaceBorder();
@@ -187,21 +161,6 @@ namespace UrbanVehicleReservationConsole
                 break;
             }
             
-            //Console.WriteLine("Add Price");
-            //while(true)
-            //{
-            //    var priceInput = Console.ReadLine();
-            //    if (priceInput == "0")
-            //    {
-            //        return;
-            //    }
-            //    else if (!reservation.IsValidPrice(priceInput, out errorString))
-            //    {
-            //        Console.WriteLine(errorString);
-            //        continue;
-            //    }
-            //    break;
-            //}
             reservation.CalculatePrice();
             reservation.setIndex(reservations);
             reservations.Add(reservation);
