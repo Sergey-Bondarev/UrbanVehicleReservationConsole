@@ -264,8 +264,8 @@ namespace UrbanVehicleReservationConsole
                 return;
             }
 
-            const int vehicleTypeWidth = 17;
-            const int dateWidth = 20;
+            int vehicleTypeWidth = Math.Max("Vehicle Type".Length, reservations.Max(r => r.vehicleType.ToString().Length)) + 2;
+            int dateWidth = Math.Max("Acceptance Date".Length, reservations.Max(r => r.acceptanceTime.ToString("dd.MM.yyyy HH:mm").Length)) + 2;
             int idWidth = Math.Max("ID".Length, reservations.Max(r => r.ReservationID.ToString().Length)) + 2;
             int nameWidth = Math.Max("Customer".Length, reservations.Max(r => r.customerName.Length)) + 2;
             int contactWidth = Math.Max("Contact".Length, reservations.Max(r => r.customerContact.Length)) + 2;
@@ -290,9 +290,9 @@ namespace UrbanVehicleReservationConsole
                 $"{r.ReservationID.ToString().PadRight(idWidth)}" +
                 $"{r.customerName.PadRight(nameWidth)}" +
                 $"{r.customerContact.PadRight(contactWidth)}" +
-                $"{r.vehicleType, -vehicleTypeWidth}" +
-                $"{r.acceptanceTime.ToString("dd.MM.yyyy HH:mm"), -dateWidth}" +
-                $"{r.deliveryTime.ToString("dd.MM.yyyy HH:mm"), -dateWidth}" +
+                $"{r.vehicleType.ToString().PadRight(vehicleTypeWidth)}" +
+                $"{r.acceptanceTime.ToString("dd.MM.yyyy HH:mm").PadRight(dateWidth)}" +
+                $"{r.deliveryTime.ToString("dd.MM.yyyy HH:mm").PadRight(dateWidth)}" +
                 $"{(r.Price + "$").PadRight(priceWidth)}");
             }
         }
