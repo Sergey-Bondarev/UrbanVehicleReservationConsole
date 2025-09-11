@@ -12,11 +12,109 @@ namespace UrbanVehicleReservationConsole
     public class Reservation
     {
         public long ReservationID { get; private set; } = -1;
-        public VehicleType vehicleType;
-        public DateTime acceptanceTime;
-        public DateTime deliveryTime;
-        public string customerName;
-        public string customerContact;
+        private VehicleType vehicleType;
+        public VehicleType VehicleType
+        {
+            get => vehicleType;
+            set => vehicleType = value;
+        }
+
+        private DateTime acceptanceTime;
+        public DateTime AcceptanceTime
+        {
+            get => acceptanceTime;
+
+            set 
+            {
+                if (value <= new DateTime(2024, 12, 31, 23, 59, 59))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Invalid date and time format. Please enter a date of 2025");
+                }
+                acceptanceTime = value;
+            }
+        }
+
+        private DateTime deliveryTime;
+        public DateTime DeliveryTime
+        {
+            get => deliveryTime;
+            set 
+            {
+                int minMinutes = 20;
+                if (value <= this.acceptanceTime)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Acceptance time comes after Delivery time. Please enter a valid date and time.");
+                }
+
+                else if ((value - acceptanceTime).TotalMinutes < minMinutes)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), $"minimum booking time is {minMinutes}. Please enter a valid date and time.");
+                }
+
+                deliveryTime = value;
+            }
+        }
+
+        private string customerName;
+        public string CustomerName
+        { 
+            get => customerName;
+
+            set
+            {
+                int nameLengthMin = 5;
+                int nameLengthMax = 30;
+                string nameRegex = @"^[A-Za-z ]+$";
+
+                if (string.IsNullOrEmpty(value)
+                || string.IsNullOrWhiteSpace(value)
+                || value.Length < nameLengthMin
+                || value.Length > nameLengthMax
+                || !Regex.IsMatch(value, nameRegex))
+                {
+                    throw new ArgumentException(
+                        $"Invalid customer name. Please enter a non-empty name with a length range between {nameLengthMin} - {nameLengthMax} characters.");
+                }
+                customerName = value;
+            }
+        }
+
+        private string customerContact;
+        public string CustomerContact
+        {
+            get => customerContact;
+
+            set 
+            {
+                int contactLengthMin = 10;
+                int contactLengthMax = 30;
+                string emailReg = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+                string telReg = @"^\+380\d{9}$";
+
+                if (string.IsNullOrEmpty(value)
+                || string.IsNullOrWhiteSpace(value)
+                || value.Length < contactLengthMin
+                || value.Length > contactLengthMax)
+                {
+                    throw new ArgumentException(
+                        $"Invalid customer contact. Please enter a non-empty contact with a a length range between {contactLengthMin} - {contactLengthMax} characters.");
+                }
+
+                else if (!Regex.IsMatch(value, emailReg)
+                    && !Regex.IsMatch(value, telReg))
+                {
+                    throw new ArgumentException($"Invalid customer contact. Input should be either tel. number with +380 or valid email address");
+                }
+                
+                customerContact = value;
+            }
+        }
+
+        public string CustomerInfo
+        {
+            get { return $"{customerName} ({customerContact})"; }
+        }
+
         public decimal Price { get; private set; }
         public Reservation()
         {
@@ -28,102 +126,35 @@ namespace UrbanVehicleReservationConsole
             Price = 0.0m;
         }
 
-        public bool IsValidVehicleType(string vehicleTypeInput, out string errorString)
+        public static bool TryParseVehicleType(string vehicleTypeInput, out VehicleType parsedType, out string errorString)
         {
-            if (!int.TryParse(vehicleTypeInput, out int typeNumber) || typeNumber < 1 || typeNumber > 5)
+            parsedType = default;
+            if (!int.TryParse(vehicleTypeInput, out int typeNumber)
+                || !Enum.IsDefined(typeof(VehicleType), typeNumber))
             {
                 errorString = "Invalid vehicle type. Please select a number between 1 and 5.";
                 return false;
             }
+
+            parsedType = (VehicleType)typeNumber;
             errorString = string.Empty;
-            vehicleType = (VehicleType) typeNumber;
             return true;
         }
 
-        public bool IsValidCustomerName(string customerName, out string errorString,
-            int nameLengthMin = 5, int nameLengthMax = 30, string nameRegex = @"^[A-Za-z ]+$")
+        public static bool IsValidDate(string dateTimeInput, out DateTime parsedDate, out string errorString)
         {
-            if (string.IsNullOrEmpty(customerName)
-                || string.IsNullOrWhiteSpace(customerName)
-                || customerName.Length < nameLengthMin
-                || customerName.Length > nameLengthMax
-                || !Regex.IsMatch(customerName, nameRegex))
-            {
-                errorString = $"Invalid customer name. Please enter a non-empty name with a length range between {nameLengthMin} - {nameLengthMax} characters.";
-                return false;
-            }
-            errorString = string.Empty;
-            this.customerName = customerName;
-            return true;
-        }
-        public bool IsValidCustomerContact(string customerContact, out string errorString, int contactLengthMin = 10, int contactLengthMax = 30,
-            string emailReg = @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-            string telReg = @"^\+380\d{9}$")
-        {
-            if (string.IsNullOrEmpty (customerContact)
-                || string.IsNullOrWhiteSpace(customerContact)
-                || customerContact.Length < contactLengthMin
-                || customerContact.Length > contactLengthMax)
-            {
-                errorString = $"Invalid customer contact. Please enter a non-empty contact with a a length range between {contactLengthMin} - {contactLengthMax} characters.";
-                return false;
-            }
-
-            else if(!Regex.IsMatch(customerContact, emailReg)
-                && !Regex.IsMatch(customerContact, telReg))
-            {
-                errorString = $"Invalid customer contact. Input should be either tel. number with +380 or valid email address";
-                return false;
-            }
-            errorString = string.Empty;
-            this.customerContact = customerContact;
-            return true;
-        }
-
-        public bool IsValidAcceptanceDateTime(string dateTimeInput, out string errorString)
-        {
+            parsedDate = DateTime.MinValue;
             if (!DateTime.TryParseExact(dateTimeInput, "dd.MM.yyyy HH:mm",
-                null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
-            {
-                errorString = "Invalid date and time format. Please enter a valid date and time.";
-                return false;
-            }
-            else if(parsedDateTime <= new DateTime(2025,01,01,23,59,59))
-            {
-                errorString = "Invalid date and time format. Please enter a date after 01.01.2025";
-                return false;
-            }
-            errorString = string.Empty;
-            this.acceptanceTime = parsedDateTime;
-            return true;
-        }
-
-        public bool IsValidDeliveryDateTime(string dateTimeInput, out string errorString, int minMinutes = 20)
-        {
-            if (!DateTime.TryParseExact(dateTimeInput, "dd.MM.yyyy HH:mm",
-                null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
+                null, System.Globalization.DateTimeStyles.None, out parsedDate))
             {
                 errorString = "Invalid date/time format or Acceptance time comes after Delivery time. Please enter a valid date and time.";
                 return false;
             }
 
-            else if (parsedDateTime <= this.acceptanceTime)
-            {
-                errorString = "Acceptance time comes after Delivery time. Please enter a valid date and time.";
-                return false;
-            }
-
-            else if ((parsedDateTime - this.acceptanceTime).TotalMinutes < minMinutes)
-            {
-                errorString = $"minimum booking time is {minMinutes}. Please enter a valid date and time.";
-                return false;
-            }
-
             errorString = string.Empty;
-            this.deliveryTime = parsedDateTime;
             return true;
-        }
 
+        }
         public bool IsValidPrice(string priceInput, out string errorString)
         {
             if (!decimal.TryParse(priceInput, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsedPrice) || parsedPrice < 0)
@@ -159,7 +190,7 @@ namespace UrbanVehicleReservationConsole
 
         public override string ToString()
         {
-            return $"{ReservationID};{vehicleType.ToString()};{acceptanceTime:dd.MM.yyyy HH:mm};{deliveryTime:dd.MM.yyyy HH:mm};{Price};{customerName};{customerContact}";
+            return $"{ReservationID};{VehicleType.ToString()};{AcceptanceTime:dd.MM.yyyy HH:mm};{DeliveryTime:dd.MM.yyyy HH:mm};{Price};{CustomerName};{CustomerContact}";
         }
 
         public void setIndex (IEnumerable<Reservation> reservations)
@@ -178,7 +209,7 @@ namespace UrbanVehicleReservationConsole
                 VehicleType.ElectricScooter => 8.0m,
                 _ => 0.0m
             };
-            TimeSpan duration = deliveryTime - acceptanceTime;
+            TimeSpan duration = DeliveryTime - AcceptanceTime;
             decimal totalHours = (decimal)duration.TotalHours;
             int hoursToCharge = (int)Math.Ceiling(totalHours);
             Price = hoursToCharge * ratePerHour;
@@ -190,12 +221,12 @@ namespace UrbanVehicleReservationConsole
             return new Reservation
             {
                 ReservationID = long.Parse(parts[0]),
-                vehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), parts[1]),
-                acceptanceTime = DateTime.ParseExact(parts[2], "dd.MM.yyyy HH:mm", null),
-                deliveryTime = DateTime.ParseExact(parts[3], "dd.MM.yyyy HH:mm", null),
+                VehicleType = (VehicleType)Enum.Parse(typeof(VehicleType), parts[1]),
+                AcceptanceTime = DateTime.ParseExact(parts[2], "dd.MM.yyyy HH:mm", null),
+                DeliveryTime = DateTime.ParseExact(parts[3], "dd.MM.yyyy HH:mm", null),
                 Price = decimal.Parse(parts[4]),
-                customerName = parts[5],
-                customerContact = parts[6]
+                CustomerName = parts[5],
+                CustomerContact = parts[6]
             };
         }
     }
