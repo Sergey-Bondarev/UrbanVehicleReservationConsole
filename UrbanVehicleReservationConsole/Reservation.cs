@@ -16,7 +16,11 @@ namespace UrbanVehicleReservationConsole
         public VehicleType VehicleType
         {
             get => vehicleType;
-            set => vehicleType = value;
+            set
+            { 
+                vehicleType = value;
+                CalculatePrice();
+            }
         }
 
         private DateTime acceptanceTime;
@@ -31,6 +35,7 @@ namespace UrbanVehicleReservationConsole
                     throw new ArgumentOutOfRangeException(nameof(value), "Invalid date and time format. Please enter a date of 2025");
                 }
                 acceptanceTime = value;
+                CalculatePrice();
             }
         }
 
@@ -52,6 +57,7 @@ namespace UrbanVehicleReservationConsole
                 }
 
                 deliveryTime = value;
+                CalculatePrice();
             }
         }
 
@@ -115,7 +121,9 @@ namespace UrbanVehicleReservationConsole
             get { return $"{customerName} ({customerContact})"; }
         }
 
-        public decimal Price { get; private set; }
+        public decimal Price { get; private set; } = 0.0m;
+
+        
         public Reservation()
         {
             vehicleType = VehicleType.Car;
@@ -123,7 +131,6 @@ namespace UrbanVehicleReservationConsole
             deliveryTime = DateTime.MinValue;
             customerName = string.Empty;
             customerContact = string.Empty;
-            Price = 0.0m;
         }
 
         public static bool TryParseVehicleType(string vehicleTypeInput, out VehicleType parsedType, out string errorString)
@@ -155,18 +162,7 @@ namespace UrbanVehicleReservationConsole
             return true;
 
         }
-        public bool IsValidPrice(string priceInput, out string errorString)
-        {
-            if (!decimal.TryParse(priceInput, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsedPrice) || parsedPrice < 0)
-            {
-                errorString = "Invalid price. Please enter a valid non-negative price.";
-                return false;
-            }
-            errorString = string.Empty;
-            this.Price = parsedPrice;
-            return true;
-        }
-
+        
         public static bool IsValidIndexOrAcceptanceDateTime(string searchInput, out string errorString, out long reservationID, out DateTime acceptanceDateTime)
         {
             reservationID = long.MinValue;
