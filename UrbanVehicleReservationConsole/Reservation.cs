@@ -12,6 +12,7 @@ namespace UrbanVehicleReservationConsole
     public class Reservation
     {
         public long ReservationID { get; private set; } = -1;
+
         private VehicleType vehicleType;
         public VehicleType VehicleType
         {
@@ -123,7 +124,6 @@ namespace UrbanVehicleReservationConsole
 
         public decimal Price { get; private set; } = 0.0m;
 
-        
         public Reservation()
         {
             vehicleType = VehicleType.Car;
