@@ -1,3 +1,5 @@
 0;Bike;10.09.2025 12:00;29.11.2025 16:00;9620,0;Joe Doe;tester.joe@mail.com
 1;Bike;11.10.2025 12:00;01.12.2025 20:00;6160,0;George;geogre@mail.com
 2;Motorcycle;17.09.2025 18:00;17.09.2025 18:50;7,0;new customer;+380998765432
+3;Scooter;20.09.2025 12:00;09.10.2025 18:00;2772,0;Joe Swonsson;swonson@mail.com
+4;Motorcycle;12.11.2025 16:00;28.11.2025 11:00;2653,0;New Customer;new.customer@mail.com

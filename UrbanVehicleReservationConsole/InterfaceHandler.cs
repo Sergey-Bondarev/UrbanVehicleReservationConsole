@@ -197,12 +197,56 @@ namespace UrbanVehicleReservationConsole
                     continue;
                 }
             }
+
+            reservation.Deconstructor(out VehicleType vehicleType, out DateTime acceptanceTime, out DateTime deliveryTime, out string customerName, out string customerContact);
+            
+            reservation = CreateNewReservationRandomConstructor(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact);
+
             reservation.CalculatePrice();
             reservation.setIndex(Reservations);
             Reservations.Add(reservation);
-            Console.WriteLine($"Reservation successfully created with next index");
+            Console.WriteLine($"Reservation successfully created with next index: {reservation.ReservationID}");
         }
 
+        public static Reservation CreateNewReservationRandomConstructor(VehicleType vehicleType, DateTime acceptanceTime,
+            DateTime deliveryTime, string customerName, string customerContact)
+        {
+            Random random = new Random();
+            int min = 1;
+            int max = 5;
+            int randomNumber = random.Next(min, max);
+
+            switch (randomNumber)
+            {
+                case 1:
+                    Console.WriteLine("Default/parameterless constructor was used with initializers. All values secured.");
+                    return new Reservation()
+                    {
+                        VehicleType = vehicleType,
+                        AcceptanceTime = acceptanceTime,
+                        DeliveryTime = deliveryTime,
+                        CustomerName = customerName,
+                        CustomerContact = customerContact
+                    };
+
+                case 2:
+                    Console.WriteLine("3-parameter constructor was used. Customer information was lost.");
+                    return new Reservation(vehicleType, acceptanceTime, deliveryTime);
+                
+                case 3:
+                    Console.WriteLine("Full-parameter constructor was used. All values secured.");
+                    return new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact);
+                
+                case 4:
+                    Console.WriteLine("Copy constructor with full-parameters was used. All values secured.");
+                    return new Reservation(new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact));
+                
+                default:
+                    Console.WriteLine("Parameterless constructor was used. No values secured.");
+                    return new Reservation();
+            }
+
+        }
         public static IEnumerable<Reservation> HandleSearchForReservetions(string searchPurposeMessage)
         {
             Console.WriteLine(searchPurposeMessage);

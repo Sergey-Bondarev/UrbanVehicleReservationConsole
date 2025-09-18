@@ -62,7 +62,7 @@ namespace UrbanVehicleReservationConsole
             }
         }
 
-        private string customerName;
+        private string customerName = "";
         public string CustomerName
         { 
             get => customerName;
@@ -86,7 +86,7 @@ namespace UrbanVehicleReservationConsole
             }
         }
 
-        private string customerContact;
+        private string customerContact = "";
         public string CustomerContact
         {
             get => customerContact;
@@ -131,6 +131,43 @@ namespace UrbanVehicleReservationConsole
             deliveryTime = DateTime.MinValue;
             customerName = string.Empty;
             customerContact = string.Empty;
+        }
+
+        public Reservation(VehicleType vehicleType, DateTime acceptanceTime, DateTime deliveryTime)
+            :this(vehicleType, acceptanceTime, deliveryTime, "New Customer", "new.customer@mail.com")
+        {
+
+        }
+        
+        public Reservation(VehicleType vehicleType, DateTime acceptanceTime, DateTime deliveryTime, string customerName, string customerContact)
+        {
+            VehicleType = vehicleType;
+            AcceptanceTime = acceptanceTime;
+            DeliveryTime = deliveryTime;
+            CustomerName = customerName;
+            CustomerContact = customerContact;
+        }
+
+        public Reservation(Reservation reservation)
+        {
+            reservation = reservation ?? throw new ArgumentNullException(nameof(reservation));
+
+            ReservationID = reservation.ReservationID;
+            VehicleType = reservation.VehicleType;
+            AcceptanceTime = reservation.AcceptanceTime;
+            DeliveryTime = reservation.DeliveryTime;
+            CustomerName = reservation.CustomerName;
+            CustomerContact = reservation.CustomerContact;
+            Price = reservation.Price;
+        }
+
+        public void Deconstructor(out VehicleType vehicleType, out DateTime acceptanceTime, out DateTime deliveryTime, out string customerName, out string customerContact)
+        {
+            vehicleType = VehicleType;
+            acceptanceTime = AcceptanceTime;
+            deliveryTime = DeliveryTime;
+            customerName = CustomerName;
+            customerContact = CustomerContact;
         }
 
         public static bool TryParseVehicleType(string vehicleTypeInput, out VehicleType parsedType, out string errorString)
