@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace UrbanVehicleReservationConsole
 {
     public class Reservation
     {
+        [JsonInclude]
         public long ReservationID { get; private set; } = -1;
 
         private VehicleType vehicleType;
@@ -122,6 +124,7 @@ namespace UrbanVehicleReservationConsole
             get { return $"{customerName} ({customerContact})"; }
         }
 
+        [JsonInclude]
         public decimal Price { get; private set; } = 0.0m;
 
         public Reservation()

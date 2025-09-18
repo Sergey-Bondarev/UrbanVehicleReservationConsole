@@ -8,7 +8,7 @@ namespace UrbanVehicleReservationConsole
 {
     public static class InterfaceHandler
     {
-        public static List<Reservation> Reservations {get; set; } = new List<Reservation>();
+        public static List<Reservation> Reservations { get; set; } = new List<Reservation>();
         public static void PrintMenu()
         {
             Console.WriteLine("Menu:");
@@ -20,7 +20,7 @@ namespace UrbanVehicleReservationConsole
         }
         public static void HandleUserMenuInput()
         {
-            LoadData();
+            //LoadData();
             PrintInterfaceBorder();
             while (true)
             {
@@ -33,7 +33,6 @@ namespace UrbanVehicleReservationConsole
                         Console.WriteLine("Reserving a vehicle...");
                         HandleNewReservation();
                         PrintInterfaceBorder();
-                        SaveData();
                         break;
                     case "2":
                         ViewAllReservationsTabular(Reservations);
@@ -48,7 +47,6 @@ namespace UrbanVehicleReservationConsole
                         }
                         ViewAllReservationsTabular(foundReservations);
                         PrintInterfaceBorder();
-                        SaveData();
                         break;
                     case "4":
                         int removedCount = 0;
@@ -58,7 +56,7 @@ namespace UrbanVehicleReservationConsole
                             Console.WriteLine("No objects were deleted on your input.");
                             break;
                         }
-                        else if(removedCount > 0)
+                        else if (removedCount > 0)
                         {
                             Console.WriteLine($"{removedCount} reservation(s) successfully removed.");
                             break;
@@ -66,7 +64,6 @@ namespace UrbanVehicleReservationConsole
                         PrintInterfaceBorder();
                         break;
                     case "0":
-                        SaveData();
                         return;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
@@ -89,7 +86,7 @@ namespace UrbanVehicleReservationConsole
                 {
                     return;
                 }
-                else if (!Reservation.TryParseVehicleType(vehicleTypeInput,out parsedType, out errorString))
+                else if (!Reservation.TryParseVehicleType(vehicleTypeInput, out parsedType, out errorString))
                 {
                     Console.WriteLine(errorString);
                     continue;
@@ -97,9 +94,9 @@ namespace UrbanVehicleReservationConsole
                 reservation.VehicleType = parsedType;
                 break;
             }
-            
+
             Console.WriteLine("Add Customer Name");
-            while(true)
+            while (true)
             {
                 var customerNameInput = Console.ReadLine();
                 if (customerNameInput == "0")
@@ -119,12 +116,12 @@ namespace UrbanVehicleReservationConsole
                     continue;
                 }
 
-                
+
                 break;
             }
-            
+
             Console.WriteLine("Add Customer Contact");
-            while(true)
+            while (true)
             {
                 var customerContactInput = Console.ReadLine();
                 if (customerContactInput == "0")
@@ -132,7 +129,8 @@ namespace UrbanVehicleReservationConsole
                     return;
                 }
 
-                try { 
+                try
+                {
                     reservation.CustomerContact = customerContactInput;
                     break;
                 }
@@ -142,9 +140,9 @@ namespace UrbanVehicleReservationConsole
                     continue;
                 }
             }
-            
+
             Console.WriteLine("Add Acceptance Date with dd.MM.yyyy HH:mm format");
-            while(true)
+            while (true)
             {
                 var acceptanceDateInput = Console.ReadLine();
                 DateTime parsedDate = DateTime.Now;
@@ -152,8 +150,8 @@ namespace UrbanVehicleReservationConsole
                 {
                     return;
                 }
-                
-                else if (!Reservation.IsValidDate(acceptanceDateInput,out parsedDate, out errorString))
+
+                else if (!Reservation.IsValidDate(acceptanceDateInput, out parsedDate, out errorString))
                 {
                     Console.WriteLine(errorString);
                     continue;
@@ -199,7 +197,7 @@ namespace UrbanVehicleReservationConsole
             }
 
             reservation.Deconstructor(out VehicleType vehicleType, out DateTime acceptanceTime, out DateTime deliveryTime, out string customerName, out string customerContact);
-            
+
             reservation = CreateNewReservationRandomConstructor(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact);
 
             reservation.CalculatePrice();
@@ -232,21 +230,22 @@ namespace UrbanVehicleReservationConsole
                 case 2:
                     Console.WriteLine("3-parameter constructor was used. Customer information was lost.");
                     return new Reservation(vehicleType, acceptanceTime, deliveryTime);
-                
+
                 case 3:
                     Console.WriteLine("Full-parameter constructor was used. All values secured.");
                     return new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact);
-                
+
                 case 4:
                     Console.WriteLine("Copy constructor with full-parameters was used. All values secured.");
                     return new Reservation(new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact));
-                
+
                 default:
                     Console.WriteLine("Parameterless constructor was used. No values secured.");
                     return new Reservation();
             }
 
         }
+        
         public static IEnumerable<Reservation> HandleSearchForReservetions(string searchPurposeMessage)
         {
             Console.WriteLine(searchPurposeMessage);
@@ -270,11 +269,11 @@ namespace UrbanVehicleReservationConsole
                 removeCount = -1;
                 return;
             }
-            removeCount = Reservations.RemoveAll(r => r.ReservationID == id 
+            removeCount = Reservations.RemoveAll(r => r.ReservationID == id
                                             || r.AcceptanceTime == date);
 
         }
-        
+
         public static void PrintSubMenuForVehicleTypes()
         {
             Console.WriteLine("Vehicle Types:");
@@ -285,7 +284,7 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine("5. ElectricScooter");
             Console.WriteLine("0. Back to Main Menu");
         }
-        
+
         public static void ViewAllReservationsTabular(IEnumerable<Reservation> reservations)
         {
             if (reservations.Count() == 0)
@@ -361,6 +360,36 @@ namespace UrbanVehicleReservationConsole
                 if (!string.IsNullOrWhiteSpace(line))
                     Reservations.Add(Reservation.FromString(line));
             }
+        }
+
+        public static void SaveDataJson(string filePath = "../../../data/Reservations.json")
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+            var options = new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+            };
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(Reservations, options);
+            File.WriteAllText(filePath, jsonString);
+        }
+
+        public static void LoadDataJson(string filePath = "../../../data/Reservations.json")
+        {
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine("Data file not found. Starting with an empty reservation list.");
+                return;
+            }
+            string jsonString = File.ReadAllText(filePath);
+            var options = new System.Text.Json.JsonSerializerOptions
+            {
+                Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+            };
+            Reservations = System.Text.Json.JsonSerializer.Deserialize<List<Reservation>>(jsonString, options) ?? new List<Reservation>();
         }
     }
 }

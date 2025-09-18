@@ -1,0 +1,42 @@
+[
+  {
+    "ReservationID": 0,
+    "VehicleType": "Bike",
+    "AcceptanceTime": "2025-09-10T12:00:00",
+    "DeliveryTime": "2025-11-29T16:00:00",
+    "CustomerName": "Joe Doe",
+    "CustomerContact": "tester.joe@mail.com",
+    "CustomerInfo": "Joe Doe (tester.joe@mail.com)",
+    "Price": 9620.0
+  },
+  {
+    "ReservationID": 1,
+    "VehicleType": "Bike",
+    "AcceptanceTime": "2025-10-11T12:00:00",
+    "DeliveryTime": "2025-12-01T20:00:00",
+    "CustomerName": "George",
+    "CustomerContact": "geogre@mail.com",
+    "CustomerInfo": "George (geogre@mail.com)",
+    "Price": 6160.0
+  },
+  {
+    "ReservationID": 3,
+    "VehicleType": "Scooter",
+    "AcceptanceTime": "2025-09-20T12:00:00",
+    "DeliveryTime": "2025-10-09T18:00:00",
+    "CustomerName": "Joe Swonsson",
+    "CustomerContact": "swonson@mail.com",
+    "CustomerInfo": "Joe Swonsson (swonson@mail.com)",
+    "Price": 2772.0
+  },
+  {
+    "ReservationID": 4,
+    "VehicleType": "Motorcycle",
+    "AcceptanceTime": "2025-11-12T16:00:00",
+    "DeliveryTime": "2025-11-28T11:00:00",
+    "CustomerName": "New Customer",
+    "CustomerContact": "new.customer@mail.com",
+    "CustomerInfo": "New Customer (new.customer@mail.com)",
+    "Price": 2653.0
+  }
+]
