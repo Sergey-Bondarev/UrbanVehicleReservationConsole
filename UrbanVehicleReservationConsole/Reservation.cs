@@ -127,6 +127,8 @@ namespace UrbanVehicleReservationConsole
         [JsonInclude]
         public decimal Price { get; private set; } = 0.0m;
 
+        public static int ReservationCounter { get; set; } = InterfaceHandler.Reservations.Count();
+
         public Reservation()
         {
             vehicleType = VehicleType.Car;
@@ -134,6 +136,8 @@ namespace UrbanVehicleReservationConsole
             deliveryTime = DateTime.MinValue;
             customerName = string.Empty;
             customerContact = string.Empty;
+
+            //ReservationCounter++;
         }
 
         public Reservation(VehicleType vehicleType, DateTime acceptanceTime, DateTime deliveryTime)
@@ -142,13 +146,16 @@ namespace UrbanVehicleReservationConsole
 
         }
         
-        public Reservation(VehicleType vehicleType, DateTime acceptanceTime, DateTime deliveryTime, string customerName, string customerContact)
+        public Reservation(VehicleType vehicleType, DateTime acceptanceTime, DateTime deliveryTime, string customerName, string customerContact, bool counterChange = true)
         {
             VehicleType = vehicleType;
             AcceptanceTime = acceptanceTime;
             DeliveryTime = deliveryTime;
             CustomerName = customerName;
             CustomerContact = customerContact;
+
+            if (counterChange)
+                ReservationCounter++;
         }
 
         public Reservation(Reservation reservation)
@@ -162,6 +169,8 @@ namespace UrbanVehicleReservationConsole
             CustomerName = reservation.CustomerName;
             CustomerContact = reservation.CustomerContact;
             Price = reservation.Price;
+
+            ReservationCounter++;
         }
 
         public void Deconstructor(out VehicleType vehicleType, out DateTime acceptanceTime, out DateTime deliveryTime, out string customerName, out string customerContact)
@@ -231,7 +240,7 @@ namespace UrbanVehicleReservationConsole
 
         public void setIndex (IEnumerable<Reservation> reservations)
         {
-            ReservationID = reservations.Count() > 0 ? reservations.Max(res => res.ReservationID) + 1 : 0;
+            ReservationID = reservations.Count() > 0 ? reservations.Max(res => res.ReservationID) + 1 : 1;
         }
 
         public void CalculatePrice()

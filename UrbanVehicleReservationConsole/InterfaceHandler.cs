@@ -218,13 +218,14 @@ namespace UrbanVehicleReservationConsole
             {
                 case 1:
                     Console.WriteLine("Default/parameterless constructor was used with initializers. All values secured.");
+                    Reservation.ReservationCounter++;
                     return new Reservation()
                     {
                         VehicleType = vehicleType,
                         AcceptanceTime = acceptanceTime,
                         DeliveryTime = deliveryTime,
                         CustomerName = customerName,
-                        CustomerContact = customerContact
+                        CustomerContact = customerContact, 
                     };
 
                 case 2:
@@ -237,10 +238,11 @@ namespace UrbanVehicleReservationConsole
 
                 case 4:
                     Console.WriteLine("Copy constructor with full-parameters was used. All values secured.");
-                    return new Reservation(new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact));
+                    return new Reservation(new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact, false));
 
                 default:
                     Console.WriteLine("Parameterless constructor was used. No values secured.");
+                    Reservation.ReservationCounter++;
                     return new Reservation();
             }
 
@@ -271,7 +273,7 @@ namespace UrbanVehicleReservationConsole
             }
             removeCount = Reservations.RemoveAll(r => r.ReservationID == id
                                             || r.AcceptanceTime == date);
-
+            Reservation.ReservationCounter -= removeCount;
         }
 
         public static void PrintSubMenuForVehicleTypes()
@@ -324,6 +326,8 @@ namespace UrbanVehicleReservationConsole
                 $"{r.DeliveryTime.ToString("dd.MM.yyyy HH:mm").PadRight(dateWidth)}" +
                 $"{(r.Price + "$").PadRight(priceWidth)}");
             }
+            Console.WriteLine($"Current value of reservation counter: {Reservation.ReservationCounter}");
+
         }
 
         public static void PrintInterfaceBorder()
