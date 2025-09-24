@@ -33,7 +33,7 @@ namespace UrbanVehicleReservationConsole
 
             set 
             {
-                if (value <= new DateTime(2024, 12, 31, 23, 59, 59))
+                if (value <= lowReseravtionBound)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), "Invalid date and time format. Please enter a date of 2025");
                 }
@@ -48,15 +48,14 @@ namespace UrbanVehicleReservationConsole
             get => deliveryTime;
             set 
             {
-                int minMinutes = 20;
                 if (value <= this.acceptanceTime)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), "Acceptance time comes after Delivery time. Please enter a valid date and time.");
                 }
 
-                else if ((value - acceptanceTime).TotalMinutes < minMinutes)
+                else if ((value - acceptanceTime).TotalMinutes < reservationDurationMin)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), $"minimum booking time is {minMinutes}. Please enter a valid date and time.");
+                    throw new ArgumentOutOfRangeException(nameof(value), $"minimum booking time is {reservationDurationMin}. Please enter a valid date and time.");
                 }
 
                 deliveryTime = value;
@@ -128,6 +127,16 @@ namespace UrbanVehicleReservationConsole
         public decimal Price { get; private set; } = 0.0m;
 
         public static int ReservationCounter { get; set; } = InterfaceHandler.Reservations.Count();
+
+        private static DateTime lowReseravtionBound { get; set; }
+
+        private static int reservationDurationMin { get; set; }
+
+        static Reservation()
+        {
+            lowReseravtionBound = new DateTime(2024, 12, 31, 23, 59, 59);
+            reservationDurationMin = 20;
+        }
 
         public Reservation()
         {
