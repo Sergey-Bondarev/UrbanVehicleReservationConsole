@@ -12,8 +12,26 @@ namespace UrbanVehicleReservationConsole
 {
     public class Reservation
     {
+        private long reservationId = -1;
         [JsonInclude]
-        public long ReservationID { get; private set; } = -1;
+        public long ReservationID 
+        {
+            get => reservationId; 
+
+            private set
+            {
+                if (InterfaceHandler.Reservations.Exists(res => res.ReservationID == value))
+                {
+                    throw new ArgumentOutOfRangeException(null, "This index has already been used");
+                }
+                else if (value < 0 || value == 0)
+                {
+                    throw new ArgumentOutOfRangeException(null, "Index cannot be negative or 0");
+                }
+                reservationId = value;
+                
+            }
+        }
 
         private VehicleType vehicleType;
         public VehicleType VehicleType
@@ -126,7 +144,7 @@ namespace UrbanVehicleReservationConsole
         [JsonInclude]
         public decimal Price { get; private set; } = 0.0m;
 
-        public static int ReservationCounter { get; set; } = InterfaceHandler.Reservations.Count();
+        public static int ReservationCounter { get; set; }
 
         private static DateTime lowReseravtionBound { get; set; }
 
@@ -136,6 +154,7 @@ namespace UrbanVehicleReservationConsole
         {
             lowReseravtionBound = new DateTime(2024, 12, 31, 23, 59, 59);
             reservationDurationMin = 20;
+            ReservationCounter = InterfaceHandler.Reservations.Count();
         }
 
         public Reservation()
@@ -269,7 +288,31 @@ namespace UrbanVehicleReservationConsole
             Price = hoursToCharge * ratePerHour;
         }
 
-        public static Reservation FromString(string line)
+
+        public static bool TryParse(string line, out Reservation reservation)
+        {
+            reservation = new();
+            if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
+            {
+                try
+                {
+                    reservation = Parse(line);
+                    return true;
+                }
+                catch (Exception _) 
+                {
+                    Console.WriteLine($"Error parsing reservation");
+                    Console.WriteLine(_.Message);
+                    return false;
+                }
+            }
+            else
+            { 
+                Console.WriteLine("Error parsing reservation: input line is null or empty.");
+                return false;
+            }
+        }
+        public static Reservation Parse(string line)
         {
             var parts = line.Split(';');
             return new Reservation

@@ -16,6 +16,7 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine("2. View reservations");
             Console.WriteLine("3. Find reservations");
             Console.WriteLine("4. Cancel a reservation");
+            Console.WriteLine("5. Add new reservation by string format");
             Console.WriteLine("0. Exit");
         }
         public static void HandleUserMenuInput()
@@ -63,10 +64,18 @@ namespace UrbanVehicleReservationConsole
                         }
                         PrintInterfaceBorder();
                         break;
+
+                    case "5":
+                        HandleNewReservationByStringInput();
+                        PrintInterfaceBorder();
+                        break;
+
                     case "0":
                         return;
+
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
+                        PrintInterfaceBorder();
                         break;
                 }
             }
@@ -265,6 +274,12 @@ namespace UrbanVehicleReservationConsole
         {
             Console.WriteLine(deletePurposeMessage);
             var input = Console.ReadLine();
+            if (string.IsNullOrEmpty(input) || input.Equals("0"))
+            {
+                removeCount = 0;
+                return;
+            }
+
             if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out string errorString, out long id, out DateTime date))
             {
                 Console.WriteLine(errorString);
@@ -336,6 +351,21 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine();
         }
 
+        public static void HandleNewReservationByStringInput()
+        {
+            Console.WriteLine("Add new reservation by string format:");
+            Console.WriteLine("{ReservationID};{VehicleType};{AcceptanceTime:dd.MM.yyyy HH:mm};{DeliveryTime:dd.MM.yyyy HH:mm};{Price};{CustomerName};{CustomerContact}");
+            string input = Console.ReadLine();
+            if (Reservation.TryParse(input, out Reservation reservation))
+            {
+                Reservation.ReservationCounter++;
+                Reservations.Add(reservation);
+                Console.WriteLine($"Reservation successfully created with next index: {reservation.ReservationID}");
+            }
+            return;
+
+        }
+
         public static void SaveData(string filePath = "../../../data/Reservations.txt")
         {
             if (!Directory.Exists(Path.GetDirectoryName(filePath)))
@@ -362,7 +392,7 @@ namespace UrbanVehicleReservationConsole
             foreach (var line in File.ReadAllLines(filePath))
             {
                 if (!string.IsNullOrWhiteSpace(line))
-                    Reservations.Add(Reservation.FromString(line));
+                    Reservations.Add(Reservation.Parse(line));
             }
         }
 
@@ -394,6 +424,7 @@ namespace UrbanVehicleReservationConsole
                 Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
             };
             Reservations = System.Text.Json.JsonSerializer.Deserialize<List<Reservation>>(jsonString, options) ?? new List<Reservation>();
+            Reservation.ReservationCounter = Reservations.Count;
         }
     }
 }
