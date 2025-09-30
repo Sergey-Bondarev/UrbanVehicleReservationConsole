@@ -288,7 +288,6 @@ namespace UrbanVehicleReservationConsole
             Price = hoursToCharge * ratePerHour;
         }
 
-
         public static bool TryParse(string line, out Reservation reservation)
         {
             reservation = new();
@@ -299,16 +298,20 @@ namespace UrbanVehicleReservationConsole
                     reservation = Parse(line);
                     return true;
                 }
-                catch (Exception _) 
+
+                catch (IndexOutOfRangeException _)
                 {
-                    Console.WriteLine($"Error parsing reservation");
-                    Console.WriteLine(_.Message);
-                    return false;
+                    throw new IndexOutOfRangeException("Not enough data to parse reservation");
                 }
+
+                catch (Exception _)
+                {
+                    throw new FormatException(_.Message);
+                }
+
             }
             else
-            { 
-                Console.WriteLine("Error parsing reservation: input line is null or empty.");
+            {
                 return false;
             }
         }

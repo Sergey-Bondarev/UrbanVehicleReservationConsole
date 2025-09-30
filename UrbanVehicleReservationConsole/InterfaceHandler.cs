@@ -228,7 +228,7 @@ namespace UrbanVehicleReservationConsole
                 case 1:
                     Console.WriteLine("Default/parameterless constructor was used with initializers. All values secured.");
                     Reservation.ReservationCounter++;
-                    return new Reservation()
+                    var newReservationDef = new Reservation()
                     {
                         VehicleType = vehicleType,
                         AcceptanceTime = acceptanceTime,
@@ -236,22 +236,36 @@ namespace UrbanVehicleReservationConsole
                         CustomerName = customerName,
                         CustomerContact = customerContact, 
                     };
+                    newReservationDef.setIndex(Reservations);
+                    return newReservationDef;
 
                 case 2:
                     Console.WriteLine("3-parameter constructor was used. Customer information was lost.");
-                    return new Reservation(vehicleType, acceptanceTime, deliveryTime);
+
+                    var newReservation3Par = new Reservation(vehicleType, acceptanceTime, deliveryTime);
+                    newReservation3Par.setIndex(Reservations);
+                    return newReservation3Par;
 
                 case 3:
                     Console.WriteLine("Full-parameter constructor was used. All values secured.");
-                    return new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact);
+
+                    var newReservationFull = new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact);
+                    newReservationFull.setIndex(Reservations);
+                    return newReservationFull;
 
                 case 4:
                     Console.WriteLine("Copy constructor with full-parameters was used. All values secured.");
-                    return new Reservation(new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact, false));
+                    
+                    var newReservationCopy = new Reservation(new Reservation(vehicleType, acceptanceTime, deliveryTime, customerName, customerContact, false));
+                    newReservationCopy.setIndex(Reservations);
+                    return newReservationCopy;
 
                 default:
                     Console.WriteLine("Parameterless constructor was used. No values secured.");
                     Reservation.ReservationCounter++;
+                    
+                    var newReservationEmpty = new Reservation();
+                    newReservationEmpty.setIndex(Reservations);
                     return new Reservation();
             }
 
@@ -356,13 +370,29 @@ namespace UrbanVehicleReservationConsole
             Console.WriteLine("Add new reservation by string format:");
             Console.WriteLine("{ReservationID};{VehicleType};{AcceptanceTime:dd.MM.yyyy HH:mm};{DeliveryTime:dd.MM.yyyy HH:mm};{Price};{CustomerName};{CustomerContact}");
             string input = Console.ReadLine();
-            if (Reservation.TryParse(input, out Reservation reservation))
+            try
             {
-                Reservation.ReservationCounter++;
-                Reservations.Add(reservation);
-                Console.WriteLine($"Reservation successfully created with next index: {reservation.ReservationID}");
+                if (Reservation.TryParse(input, out Reservation reservation))
+                {
+                    Reservation.ReservationCounter++;
+                    Reservations.Add(reservation);
+                    Console.WriteLine($"Reservation successfully created with next index: {reservation.ReservationID}");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to parse reservation from empty or null input string.");
+                }
+
+                return;
+
             }
-            return;
+            catch (Exception _)
+            {
+                int.TryParse(input.Split(';')[0], out int parsedId);
+                Console.WriteLine($"Error parsing reservation");
+                Console.WriteLine(_.Message);
+                return;
+            }
 
         }
 
