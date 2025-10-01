@@ -315,6 +315,7 @@ namespace UrbanVehicleReservationConsole
                 return false;
             }
         }
+
         public static Reservation Parse(string line)
         {
             var parts = line.Split(';');

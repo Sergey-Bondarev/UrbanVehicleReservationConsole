@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6 d17.14
+VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanVehicleReservationConsole", "UrbanVehicleReservationConsole\UrbanVehicleReservationConsole.csproj", "{80761281-4047-4E32-883C-614E9D74B78E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationConsoleTest", "ReservationConsoleTest\ReservationConsoleTest.csproj", "{7EE7C028-FB09-42BD-9C65-D21F843E9D91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{80761281-4047-4E32-883C-614E9D74B78E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80761281-4047-4E32-883C-614E9D74B78E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80761281-4047-4E32-883C-614E9D74B78E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EE7C028-FB09-42BD-9C65-D21F843E9D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE7C028-FB09-42BD-9C65-D21F843E9D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EE7C028-FB09-42BD-9C65-D21F843E9D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE7C028-FB09-42BD-9C65-D21F843E9D91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
