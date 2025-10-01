@@ -1,4 +1,5 @@
-﻿using UrbanVehicleReservationConsole;
+﻿using System.Globalization;
+using UrbanVehicleReservationConsole;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReservationConsoleTest
@@ -272,9 +273,12 @@ namespace ReservationConsoleTest
         [TestMethod]
         public void TestToString()
         {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
             string output = _reservation.ToString();
 
-            Assert.AreEqual(output, "-1;Car;01.01.0001 00:00;01.01.0001 00:00;0,0;;");
+            Assert.AreEqual(output, "-1;Car;01.01.0001 00:00;01.01.0001 00:00;0.0;;");
         }
     }
 }
