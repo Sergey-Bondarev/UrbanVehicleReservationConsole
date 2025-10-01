@@ -139,6 +139,7 @@ namespace ReservationConsoleTest
 
         [TestMethod]
         [DataRow("1;Bike;11.10.2025 12:00;01.12.202520:00;6160,0;George;geogre@mail.com", typeof(FormatException))]
+        [DataRow("-1;Bike;11.10.2025 12:00;01.12.2025 20:00;6160,0;George;geogre@mail.com", typeof(FormatException))]
         [DataRow("1;Bike;11.10.2025 12:00,01.12.2025 20:00;6160,0;George;geogre@mail.com", typeof(FormatException))]
         [DataRow("1;Bike;11.10.2025 12:00;01.12.2025 20:00;6160,0;George;geogre@mail.com", typeof(ArgumentNullException))]
         [DataRow("1;11.10.2025 12:00;01.12.2025 20:00;6160,0;George;geogre@mail.com", typeof(FormatException))]
