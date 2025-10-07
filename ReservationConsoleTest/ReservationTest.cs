@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using UrbanVehicleReservationConsole;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReservationConsoleTest
 {
