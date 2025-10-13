@@ -4,9 +4,9 @@
     "VehicleType": "Bike",
     "AcceptanceTime": "2025-10-11T12:00:00",
     "DeliveryTime": "2025-12-01T20:00:00",
-    "CustomerName": "George",
-    "CustomerContact": "geogre@mail.com",
-    "CustomerInfo": "George (geogre@mail.com)",
+    "CustomerName": "Tester one",
+    "CustomerContact": "tester1@mail.com",
+    "CustomerInfo": "Tester one (tester1@mail.com)",
     "Price": 6160.0
   },
   {
@@ -14,29 +14,49 @@
     "VehicleType": "Scooter",
     "AcceptanceTime": "2025-09-20T12:00:00",
     "DeliveryTime": "2025-10-09T18:00:00",
-    "CustomerName": "Joe Swonsson",
-    "CustomerContact": "swonson@mail.com",
-    "CustomerInfo": "Joe Swonsson (swonson@mail.com)",
+    "CustomerName": "Tester two",
+    "CustomerContact": "tester2@mail.com",
+    "CustomerInfo": "Tester two (tester2@mail.com)",
     "Price": 2772.0
   },
   {
-    "ReservationID": 4,
-    "VehicleType": "Motorcycle",
-    "AcceptanceTime": "2025-11-12T16:00:00",
-    "DeliveryTime": "2025-11-28T11:00:00",
-    "CustomerName": "New Customer",
-    "CustomerContact": "new.customer@mail.com",
-    "CustomerInfo": "New Customer (new.customer@mail.com)",
-    "Price": 2653.0
+    "ReservationID": 5,
+    "VehicleType": "Car",
+    "AcceptanceTime": "2025-09-25T11:00:00",
+    "DeliveryTime": "2025-11-11T19:00:00",
+    "CustomerName": "Tester three",
+    "CustomerContact": "tester3@mail.com",
+    "CustomerInfo": "Tester three (tester3@mail.com)",
+    "Price": 7945.0
   },
   {
-    "ReservationID": 5,
+    "ReservationID": 9,
+    "VehicleType": "Car",
+    "AcceptanceTime": "2025-03-11T12:00:00",
+    "DeliveryTime": "2025-05-14T12:00:00",
+    "CustomerName": "Tester four",
+    "CustomerContact": "tester4@mail.com",
+    "CustomerInfo": "Tester four (tester4@mail.com)",
+    "Price": 1890.0
+  },
+  {
+    "ReservationID": 11,
     "VehicleType": "Motorcycle",
-    "AcceptanceTime": "2025-09-25T11:00:00",
-    "DeliveryTime": "2025-11-11T18:00:00",
-    "CustomerName": "Silvio Dante",
-    "CustomerContact": "sil.dante@mail.com",
-    "CustomerInfo": "Silvio Dante (sil.dante@mail.com)",
-    "Price": 7945.0
+    "AcceptanceTime": "2025-10-01T11:00:00",
+    "DeliveryTime": "2025-11-26T11:00:00",
+    "CustomerName": "Tester five",
+    "CustomerContact": "tester5@mail.com",
+    "CustomerInfo": "Tester five (tester5@mail.com)",
+    "Price": 123.0
+  },
+  {
+    "ReservationID": 10,
+    "VehicleType": "ElectricScooter",
+    "AcceptanceTime": "2025-03-11T12:00:00",
+    "DeliveryTime": "2025-05-08T09:00:00",
+    "CustomerName": "Tester six",
+    "CustomerContact": "tester6@mail.com",
+    "CustomerInfo": "Tester six (tester6@mail.com)",
+    "Price": 1567.0
   }
 ]

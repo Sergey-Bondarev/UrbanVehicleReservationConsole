@@ -11,6 +11,7 @@ namespace ReservationConsoleTest
         [TestInitialize]
         public void Setup()
         {
+            InterfaceHandler.Reservations.Clear();
             _reservation = new Reservation();
         }
 
@@ -18,6 +19,7 @@ namespace ReservationConsoleTest
         public void CleanUp()
         {
             _reservation = null;
+            InterfaceHandler.Reservations.Clear();
         }
 
         [TestMethod]

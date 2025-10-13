@@ -40,20 +40,29 @@ namespace UrbanVehicleReservationConsole
                         PrintInterfaceBorder();
                         break;
                     case "3":
-                        var foundReservations = HandleSearchForReservetions("Please enter unique ID or Reservation date and time of reservation");
+                        Console.WriteLine("Please enter unique ID or Reservation date and time of reservation");
+                        string? inputForSearch = Console.ReadLine();
+                        var foundReservations = HandleSearchForReservetions(inputForSearch, out string errorString);
+
                         if (foundReservations.Count() == 0)
                         {
+                            Console.WriteLine(errorString);
                             Console.WriteLine("No reservations found on input data.");
                             break;
                         }
                         ViewAllReservationsTabular(foundReservations);
                         PrintInterfaceBorder();
                         break;
+
                     case "4":
                         int removedCount = 0;
-                        HandleDeleteReservation("Please enter unique ID or Reservation date and time of reservation to delete", out removedCount);
+                        Console.WriteLine("Please enter unique ID or Reservation date and time of reservation to delete");
+                        string? inputForDelete = Console.ReadLine();
+                        HandleDeleteReservation(inputForDelete, out string errorStringDelete, out removedCount);
+                        
                         if (removedCount == 0)
                         {
+                            Console.WriteLine(errorStringDelete);
                             Console.WriteLine("No objects were deleted on your input.");
                             break;
                         }
@@ -271,30 +280,26 @@ namespace UrbanVehicleReservationConsole
 
         }
         
-        public static IEnumerable<Reservation> HandleSearchForReservetions(string searchPurposeMessage)
+        public static IEnumerable<Reservation> HandleSearchForReservetions(string input, out string errorString)
         {
-            Console.WriteLine(searchPurposeMessage);
-            var input = Console.ReadLine();
-            if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out string errorString, out long id, out DateTime date))
+            if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out errorString, out long id, out DateTime date))
             {
-                Console.WriteLine(errorString);
                 return new List<Reservation>();
             }
             return Reservations.FindAll(r => r.ReservationID == id
                                     || r.AcceptanceTime == date).ToList();
         }
 
-        public static void HandleDeleteReservation(string deletePurposeMessage, out int removeCount)
+        public static void HandleDeleteReservation(string input, out string errorString, out int removeCount)
         {
-            Console.WriteLine(deletePurposeMessage);
-            var input = Console.ReadLine();
             if (string.IsNullOrEmpty(input) || input.Equals("0"))
             {
                 removeCount = 0;
+                errorString = "";
                 return;
             }
 
-            if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out string errorString, out long id, out DateTime date))
+            if (!Reservation.IsValidIndexOrAcceptanceDateTime(input, out errorString, out long id, out DateTime date))
             {
                 Console.WriteLine(errorString);
                 removeCount = -1;
@@ -302,6 +307,7 @@ namespace UrbanVehicleReservationConsole
             }
             removeCount = Reservations.RemoveAll(r => r.ReservationID == id
                                             || r.AcceptanceTime == date);
+            
             Reservation.ReservationCounter -= removeCount;
         }
 
@@ -355,8 +361,8 @@ namespace UrbanVehicleReservationConsole
                 $"{r.DeliveryTime.ToString("dd.MM.yyyy HH:mm").PadRight(dateWidth)}" +
                 $"{(r.Price + "$").PadRight(priceWidth)}");
             }
-            Console.WriteLine($"Current value of reservation counter: {Reservation.ReservationCounter}");
-
+            Console.WriteLine("_______");
+            Console.WriteLine($"Current value of reservation in System: {Reservation.ReservationCounter}");
         }
 
         public static void PrintInterfaceBorder()
@@ -424,6 +430,7 @@ namespace UrbanVehicleReservationConsole
                 if (!string.IsNullOrWhiteSpace(line))
                     Reservations.Add(Reservation.Parse(line));
             }
+            Reservation.ReservationCounter = Reservations.Count;
         }
 
         public static void SaveDataJson(string filePath = "../../../data/Reservations.json")
