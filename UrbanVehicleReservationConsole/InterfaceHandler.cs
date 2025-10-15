@@ -425,10 +425,25 @@ namespace UrbanVehicleReservationConsole
                 return;
             }
             Reservations.Clear();
+
             foreach (var line in File.ReadAllLines(filePath))
             {
                 if (!string.IsNullOrWhiteSpace(line))
-                    Reservations.Add(Reservation.Parse(line));
+                {
+                    try
+                    {
+                        Reservations.Add(Reservation.Parse(line));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("__________");
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"In line: " + line);
+                        Console.WriteLine("Skipping invalid line.");
+                        Console.WriteLine("__________");
+                        continue;
+                    }
+                }
             }
             Reservation.ReservationCounter = Reservations.Count;
         }
